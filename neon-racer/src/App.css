@@ -1,0 +1,272 @@
+:root {
+  --ferrari-red: #FF2800;
+  --ferrari-yellow: #FFEB00;
+  --nero: #000000;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--nero);
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: 600px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #222 0%, #111 100%);
+  border-left: 4px solid var(--ferrari-yellow);
+  border-right: 4px solid var(--ferrari-yellow);
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(255, 40, 0, 0.3);
+}
+
+.lanes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.lane-divider {
+  border-right: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+.lane-divider:last-child {
+  border-right: none;
+}
+
+/* Base Car Styling */
+.car {
+  position: absolute;
+  width: 60px;
+  height: 100px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+}
+
+/* Windows/Cockpit */
+.car::before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.7);
+  margin-top: 20px;
+  border-radius: 8px 8px 4px 4px;
+}
+
+/* Headlights/Taillights */
+.car::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.player-car {
+  /* Dynamic Background set in JS */
+}
+
+/* Tail lights for player */
+.player-car::after {
+  border-bottom: 5px solid #ff0000;
+  bottom: 5px;
+  width: 80%;
+  border-radius: 0 0 10px 10px;
+}
+
+/* Enemy Cars */
+.object-obstacle {
+  background-color: #444;
+  transform: translateX(-50%);
+  border-radius: 12px;
+}
+
+.object-obstacle::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.7);
+  top: 20px;
+  left: 10px;
+  border-radius: 4px 4px 8px 8px;
+}
+
+/* Headlights for enemy */
+.object-obstacle::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  width: 80%;
+  height: 5px;
+  background: white;
+  left: 10%;
+  border-radius: 5px;
+  box-shadow: 0 0 10px white;
+}
+
+.object-fuel {
+  position: absolute;
+  width: 45px;
+  height: 55px;
+  background-color: #00ff00;
+  border-radius: 5px;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: black;
+  font-size: 24px;
+  box-shadow: 0 0 15px #00ff00;
+}
+
+.hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.hud-item {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 15px;
+  border: 2px solid var(--ferrari-red);
+  border-radius: 5px;
+  font-family: 'Arial Black', sans-serif;
+  font-size: 16px;
+  color: white;
+}
+
+.fuel-bar-container {
+  width: 150px;
+  height: 15px;
+  background: #333;
+  border: 1px solid white;
+  margin-top: 5px;
+}
+
+.fuel-bar {
+  height: 100%;
+  background: var(--ferrari-yellow);
+}
+
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  text-align: center;
+  padding: 20px;
+}
+
+.ferrari-title {
+  font-size: 3.5rem;
+  color: var(--ferrari-red);
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--ferrari-yellow);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.menu-section {
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.menu-section p {
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #888;
+}
+
+.difficulty-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.diff-btn {
+  background: transparent;
+  border: 2px solid #555;
+  color: #888;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: all 0.2s;
+  min-width: 100px;
+}
+
+.diff-btn.active {
+  border-color: var(--ferrari-yellow);
+  color: black;
+  background: var(--ferrari-yellow);
+  box-shadow: 0 0 15px rgba(255, 235, 0, 0.4);
+}
+
+.start-btn {
+  background: var(--ferrari-red);
+  border: none;
+  color: white;
+  padding: 15px 60px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(255, 40, 0, 0.4);
+  margin-top: 10px;
+}
+
+.start-btn:hover {
+  transform: scale(1.05);
+  background: #ff4500;
+}
+
+.instructions {
+  margin-top: 30px;
+  color: #666;
+  font-size: 0.8rem;
+}
