@@ -7,10 +7,10 @@
 .game-container {
   width: 100vw;
   height: 100vh;
-  background-color: #1a1a2e; /* Dark night sky */
+  background-color: #04040e; /* Cyber space night */
   position: relative;
   overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .stars {
@@ -25,8 +25,8 @@
               radial-gradient(white, rgba(255, 255, 255, 0) 2px);
   background-size: 550px 550px, 350px 350px, 250px 250px;
   background-position: 0 0, 40px 60px, 130px 270px;
-  animation: moveStars 100s linear infinite;
-  opacity: 0.3;
+  animation: moveStars 110s linear infinite;
+  opacity: 0.35;
 }
 
 @keyframes moveStars {
@@ -46,37 +46,42 @@
 }
 
 .p1-stats, .p2-stats {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(6, 6, 20, 0.8);
+  border: 1px solid rgba(0, 210, 255, 0.2);
   padding: 10px 20px;
-  border-radius: 10px;
+  border-radius: 6px;
   text-align: center;
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.05);
 }
 
-.p1-stats .label { color: #8ca33e; font-weight: bold; }
-.p2-stats .label { color: #3498db; font-weight: bold; }
+.p1-stats { border-color: rgba(0, 210, 255, 0.4); }
+.p2-stats { border-color: rgba(255, 0, 127, 0.4); }
+
+.p1-stats .label { color: #00d2ff; font-weight: bold; text-shadow: 0 0 5px rgba(0,210,255,0.4); }
+.p2-stats .label { color: #ff007f; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,127,0.4); }
 
 .level-info {
-  font-size: 2rem;
-  color: #f5cd79;
-  font-weight: bold;
-  text-shadow: 0 0 10px rgba(245, 205, 121, 0.5);
+  font-size: 1.8rem;
+  color: #ffff00;
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255, 255, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.score { font-size: 1.5rem; color: #fff; }
-.lives { font-size: 1.2rem; }
+.score { font-size: 1.3rem; color: #fff; margin-top: 2px; }
+.lives { font-size: 1.1rem; margin-top: 2px; }
 
 .bullets-info {
-  font-size: 0.9rem;
-  color: #aaa;
+  font-size: 0.8rem;
+  color: #888;
   margin-top: 5px;
   font-family: 'Courier New', Courier, monospace;
 }
 
 .bullets-info.recharging {
-  color: #e74c3c;
+  color: #ff0055;
   font-weight: bold;
   animation: blink 0.5s infinite;
 }
@@ -87,81 +92,100 @@
   100% { opacity: 1; }
 }
 
+/* Upgraded Laser Guns */
 .gun {
   position: absolute;
   bottom: 20px;
-  width: 60px;
-  height: 40px;
-  border-radius: 10px 10px 2px 2px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  transition: transform 0.1s;
+  width: 50px;
+  height: 25px;
+  border-radius: 6px 6px 2px 2px;
+  z-index: 10;
 }
 
 .gun.p1 { 
-  background: linear-gradient(to top, #556b2f, #8ca33e);
-  border: 1px solid #a8c14d;
+  background: linear-gradient(to top, #004d66, #00d2ff);
+  border: 1px solid #80e5ff;
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
 }
 
 .gun.p2 { 
-  background: linear-gradient(to top, #2980b9, #3498db);
-  border: 1px solid #5dade2;
+  background: linear-gradient(to top, #660033, #ff007f);
+  border: 1px solid #ff80bf;
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
 }
 
-.gun::before {
-  content: '';
+.gun.p2.cpu-gun {
+  background: linear-gradient(to top, #440066, #9b59b6);
+  border: 1px solid #c39bd3;
+  box-shadow: 0 0 15px rgba(155, 89, 182, 0.4);
+}
+
+.gun-barrel {
   position: absolute;
-  bottom: -5px;
-  left: 10px;
-  width: 10px;
-  height: 10px;
-  background-color: #f39c12;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #f39c12, 30px 0 10px #f39c12;
-  animation: flicker 0.1s infinite alternate;
+  top: -14px;
+  left: 17px;
+  width: 16px;
+  height: 15px;
+  border-radius: 4px 4px 0 0;
 }
 
-.gun::after {
-  content: '';
-  position: absolute;
-  top: -15px;
-  left: 20px;
-  width: 20px;
-  height: 25px;
-  background-color: inherit;
-  border-radius: 5px 5px 0 0;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+.gun-barrel.cyan-barrel {
+  background-color: #00d2ff;
+  box-shadow: 0 0 10px #00d2ff;
 }
 
-@keyframes flicker {
-  from { opacity: 0.8; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1.1); }
+.gun-barrel.pink-barrel {
+  background-color: #ff007f;
+  box-shadow: 0 0 10px #ff007f;
 }
 
 .bullet {
   position: absolute;
   width: 6px;
-  height: 15px;
+  height: 18px;
   border-radius: 3px;
+  z-index: 8;
 }
 
-.bullet.p1 { background-color: #8ca33e; box-shadow: 0 0 10px #8ca33e; }
-.bullet.p2 { background-color: #3498db; box-shadow: 0 0 10px #3498db; }
+.bullet.p1 { background-color: #00d2ff; box-shadow: 0 0 12px #00d2ff; }
+.bullet.p2 { background-color: #ff007f; box-shadow: 0 0 12px #ff007f; }
 
+/* Dynamic Balloons with Strings and Glares */
 .balloon {
   position: absolute;
   border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-  box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.2);
-  transition: opacity 0.1s;
+  box-shadow: inset -4px -6px 12px rgba(0, 0, 0, 0.35);
+  z-index: 6;
+}
+
+.balloon-glare {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  width: 10px;
+  height: 14px;
+  background-color: rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+.balloon-string {
+  position: absolute;
+  bottom: -15px;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 16px;
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .balloon.special {
-  box-shadow: 0 0 20px #ffd700, inset -5px -5px 10px rgba(0, 0, 0, 0.2);
-  border: 2px solid #fff;
-  animation: pulse 1s infinite alternate;
+  box-shadow: 0 0 25px #ffd700, inset -5px -5px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #fff;
+  animation: pulse 0.8s infinite alternate;
 }
 
 @keyframes pulse {
-  from { transform: scale(1); }
+  from { transform: scale(1.0); }
   to { transform: scale(1.1); }
 }
 
@@ -172,8 +196,7 @@
 
 @keyframes burst {
   0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: 0.5; }
-  100% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
 
 .divider {
@@ -182,7 +205,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(to bottom, transparent, rgba(0, 210, 255, 0.1), transparent);
 }
 
 .overlay {
@@ -191,53 +214,73 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(4, 4, 12, 0.94);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: #fff;
-  z-index: 10;
+  z-index: 100;
+  backdrop-filter: blur(4px);
 }
 
-.overlay h1 {
+.title-glow {
   font-size: 3.5rem;
-  margin-bottom: 40px;
-  color: #f19066; /* Softer coral instead of bright red */
+  margin-bottom: 30px;
+  color: #00d2ff;
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-shadow: 0 0 25px rgba(0, 210, 255, 0.6);
+}
+
+.victory-announcement {
+  color: #ffff00;
+  text-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+  font-size: 2rem;
+  margin: 0;
 }
 
 .results {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-}
-
-.results h2 {
-  color: #f5cd79; /* Muted yellow */
+  gap: 10px;
 }
 
 .menu-buttons {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 320px;
+  width: 300px;
 }
 
 button {
   width: 100%;
   padding: 12px 20px;
   font-size: 1.1rem;
-  background-color: #cf6a87;
-  color: #fff;
+  background-color: #00d2ff;
+  color: #020205;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s;
+  letter-spacing: 1px;
 }
 
 button:hover {
-  background-color: #e77f95;
+  background-color: #ffffff;
+  transform: scale(1.03);
+}
+
+/* Floating Scores */
+.floating-score {
+  position: absolute;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 12;
+  transform: translate(-50%, -50%);
 }

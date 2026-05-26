@@ -1,7 +1,7 @@
 :root {
   --ferrari-red: #FF2800;
   --ferrari-yellow: #FFEB00;
-  --nero: #000000;
+  --nero: #020205;
 }
 
 body {
@@ -9,7 +9,7 @@ body {
   padding: 0;
   background-color: var(--nero);
   color: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -26,125 +26,169 @@ body {
   align-items: center;
 }
 
+/* 3D Perspective Arena */
 .game-container {
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, #222 0%, #111 100%);
-  border-left: 4px solid var(--ferrari-yellow);
-  border-right: 4px solid var(--ferrari-yellow);
+  background: linear-gradient(180deg, #050515 0%, #0c0c25 60%, #15153b 100%);
+  border-left: 4px solid #00d2ff;
+  border-right: 4px solid #00d2ff;
   overflow: hidden;
-  box-shadow: 0 0 30px rgba(255, 40, 0, 0.3);
+  box-shadow: 0 0 40px rgba(0, 210, 255, 0.4);
+  perspective: 450px; /* Crucial for 3D road depth */
+}
+
+/* Screen shake keyframes during Nitro Boost */
+.game-container.nitro-boost {
+  animation: shake 0.12s infinite;
+  border-left-color: #ff007f;
+  border-right-color: #ff007f;
+  box-shadow: 0 0 50px rgba(255, 0, 127, 0.6);
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(0px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(2px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(2px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* 3D Tilted Lanes */
+.lanes-wrapper {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  transform: rotateX(28deg); /* Tilts the road backward */
+  transform-origin: bottom center;
 }
 
 .lanes {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  background: rgba(10, 10, 30, 0.6);
 }
 
 .lane-divider {
-  border-right: 2px dashed rgba(255, 255, 255, 0.2);
+  border-right: 4px dashed rgba(0, 210, 255, 0.25);
+  height: 100%;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
 }
 
 .lane-divider:last-child {
   border-right: none;
 }
 
-/* Base Car Styling */
-.car {
+/* Cyber Player Car Design */
+.player-car {
   position: absolute;
   width: 60px;
-  height: 100px;
-  border-radius: 12px;
+  height: 90px;
+  border-radius: 15px 15px 8px 8px;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 10;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+  transition: left 0.15s ease-out;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Windows/Cockpit */
-.car::before {
-  content: '';
-  width: 40px;
-  height: 40px;
-  background: rgba(0, 0, 0, 0.7);
-  margin-top: 20px;
-  border-radius: 8px 8px 4px 4px;
+.car-cabin {
+  width: 34px;
+  height: 38px;
+  background: linear-gradient(180deg, #111 0%, #333 100%);
+  border: 2px solid #00d2ff;
+  margin-top: 18px;
+  border-radius: 10px 10px 4px 4px;
+  box-shadow: inset 0 0 10px rgba(0,210,255,0.5);
 }
 
-/* Headlights/Taillights */
-.car::after {
-  content: '';
+.car-thrusters {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  bottom: -10px;
+  display: flex;
+  gap: 8px;
 }
 
-.player-car {
-  /* Dynamic Background set in JS */
+.flame {
+  width: 14px;
+  height: 16px;
+  background: linear-gradient(180deg, #00d2ff, transparent);
+  border-radius: 50%;
+  animation: flicker 0.1s infinite alternate;
+  box-shadow: 0 0 15px #00d2ff;
 }
 
-/* Tail lights for player */
-.player-car::after {
-  border-bottom: 5px solid #ff0000;
-  bottom: 5px;
-  width: 80%;
-  border-radius: 0 0 10px 10px;
+.flame.large-flame {
+  width: 18px;
+  height: 30px;
+  background: linear-gradient(180deg, #ff007f, #ffeb00, transparent);
+  box-shadow: 0 0 25px #ff007f;
 }
 
-/* Enemy Cars */
-.object-obstacle {
-  background-color: #444;
-  transform: translateX(-50%);
-  border-radius: 12px;
+@keyframes flicker {
+  0% { transform: scaleY(0.9); opacity: 0.8; }
+  100% { transform: scaleY(1.3); opacity: 1; }
 }
 
-.object-obstacle::before {
-  content: '';
+/* Enemy Cybercars */
+.enemy-car {
   position: absolute;
-  width: 40px;
-  height: 40px;
-  background: rgba(0, 0, 0, 0.7);
-  top: 20px;
-  left: 10px;
-  border-radius: 4px 4px 8px 8px;
+  width: 60px;
+  height: 90px;
+  background-color: #1a1a24;
+  border-radius: 8px 8px 15px 15px;
+  z-index: 5;
+  border: 2px solid #ff0055;
+  box-shadow: 0 0 15px rgba(255,0,85,0.4);
 }
 
-/* Headlights for enemy */
-.object-obstacle::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  width: 80%;
-  height: 5px;
-  background: white;
-  left: 10%;
-  border-radius: 5px;
-  box-shadow: 0 0 10px white;
+.car-cabin.enemy {
+  width: 34px;
+  height: 38px;
+  background: #0a0a0f;
+  border: 1px solid #ff0055;
+  margin: 30px auto 0 auto;
+  border-radius: 4px 4px 10px 10px;
 }
 
+/* Fuel Cell Glow */
 .object-fuel {
   position: absolute;
   width: 45px;
-  height: 55px;
-  background-color: #00ff00;
-  border-radius: 5px;
-  transform: translateX(-50%);
+  height: 45px;
+  background: linear-gradient(135deg, #00ff87 0%, #60efff 100%);
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  color: black;
-  font-size: 24px;
-  box-shadow: 0 0 15px #00ff00;
+  box-shadow: 0 0 20px #00ff87;
+  animation: pulse 1s infinite alternate;
 }
 
+.fuel-icon {
+  font-size: 20px;
+  color: #020205;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0% { transform: translateX(-50%) scale(0.9); box-shadow: 0 0 15px #00ff87; }
+  100% { transform: translateX(-50%) scale(1.1); box-shadow: 0 0 25px #60efff; }
+}
+
+/* HUD System */
 .hud {
   position: absolute;
   top: 20px;
@@ -157,35 +201,43 @@ body {
 }
 
 .hud-item {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 10px 15px;
-  border: 2px solid var(--ferrari-red);
-  border-radius: 5px;
-  font-family: 'Arial Black', sans-serif;
-  font-size: 16px;
-  color: white;
+  background: rgba(6, 6, 20, 0.85);
+  padding: 8px 15px;
+  border: 1px solid #00d2ff;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #00d2ff;
+  text-shadow: 0 0 5px rgba(0, 210, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .fuel-bar-container {
-  width: 150px;
-  height: 15px;
-  background: #333;
-  border: 1px solid white;
+  width: 140px;
+  height: 10px;
+  background: #0f0f2d;
+  border: 1px solid #00d2ff;
   margin-top: 5px;
+  border-radius: 2px;
+  overflow: hidden;
 }
 
 .fuel-bar {
   height: 100%;
-  background: var(--ferrari-yellow);
+  background: linear-gradient(90deg, #00ff87, #00d2ff);
+  transition: width 0.1s linear;
 }
 
+/* Menu Overlays */
 .menu-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(4, 4, 12, 0.96);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -193,20 +245,34 @@ body {
   z-index: 100;
   text-align: center;
   padding: 20px;
+  box-sizing: border-box;
 }
 
-.ferrari-title {
+.cyber-racer-title {
   font-size: 3.5rem;
-  color: var(--ferrari-red);
+  color: #00d2ff;
   font-weight: 900;
-  letter-spacing: 2px;
-  margin-bottom: 5px;
+  letter-spacing: 5px;
+  margin-bottom: 2px;
+  text-shadow: 0 0 20px rgba(0, 210, 255, 0.6);
+}
+
+.gameover-title {
+  font-size: 3.2rem;
+  color: #ff0055;
+  font-weight: 900;
+  letter-spacing: 4px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
 }
 
 .subtitle {
-  color: var(--ferrari-yellow);
+  color: #ff007f;
+  font-size: 1rem;
+  letter-spacing: 3px;
   font-style: italic;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
 }
 
 .menu-section {
@@ -217,56 +283,61 @@ body {
 .menu-section p {
   font-size: 0.8rem;
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   margin-bottom: 10px;
-  color: #888;
+  color: #555577;
 }
 
 .difficulty-container {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .diff-btn {
-  background: transparent;
-  border: 2px solid #555;
-  color: #888;
-  padding: 10px 20px;
+  background: #0f0f2d;
+  border: 1px solid #00d2ff;
+  color: #00d2ff;
+  padding: 10px 18px;
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
   transition: all 0.2s;
-  min-width: 100px;
+  min-width: 90px;
+  letter-spacing: 1px;
 }
 
 .diff-btn.active {
-  border-color: var(--ferrari-yellow);
-  color: black;
-  background: var(--ferrari-yellow);
-  box-shadow: 0 0 15px rgba(255, 235, 0, 0.4);
+  border-color: #ff007f;
+  color: #ffffff;
+  background: #ff007f;
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
 }
 
 .start-btn {
-  background: var(--ferrari-red);
+  background: #00d2ff;
   border: none;
-  color: white;
-  padding: 15px 60px;
-  font-size: 1.5rem;
+  color: #020205;
+  padding: 14px 50px;
+  font-size: 1.3rem;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 4px;
   font-weight: bold;
-  box-shadow: 0 5px 15px rgba(255, 40, 0, 0.4);
-  margin-top: 10px;
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+  margin-top: 15px;
+  letter-spacing: 2px;
+  transition: all 0.2s;
 }
 
 .start-btn:hover {
   transform: scale(1.05);
-  background: #ff4500;
+  background: #ffffff;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
 }
 
 .instructions {
-  margin-top: 30px;
-  color: #666;
+  margin-top: 35px;
+  color: #444466;
   font-size: 0.8rem;
+  line-height: 1.6;
 }

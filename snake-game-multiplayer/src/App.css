@@ -1,7 +1,14 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
+  padding: 1rem;
   text-align: center;
+}
+
+body {
+  margin: 0;
+  background-color: #06060c;
+  overflow: hidden;
 }
 
 .game-container {
@@ -10,67 +17,51 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #8ca33e;
-  font-family: 'Courier New', Courier, monospace;
+  background-color: #06060c;
+  color: #00d2ff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.cyber-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #00d2ff;
+  letter-spacing: 8px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 20px rgba(0, 210, 255, 0.6);
 }
 
 .header {
-  margin-bottom: 10px;
-  width: 100%;
+  margin-bottom: 15px;
+  width: 800px;
 }
 
 .stats {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
   font-weight: bold;
   font-size: 1.2rem;
+  text-shadow: 0 0 5px rgba(0, 210, 255, 0.4);
 }
 
-.score.p1 { color: #8ca33e; }
-.score.p2 { color: #3498db; }
+.score.p1 {
+  color: #00d2ff;
+}
 
-.grid.multiplayer {
-  display: grid;
-  grid-template-columns: repeat(80, 10px);
-  grid-template-rows: repeat(45, 10px);
-  gap: 1px;
-  background-color: #333;
-  border: 5px solid #444;
+.score.p2 {
+  color: #ff007f;
+  text-shadow: 0 0 5px rgba(255, 0, 127, 0.4);
+}
+
+.high-score {
+  color: #ffffff;
+}
+
+.canvas-wrapper {
   position: relative;
-}
-
-.cell {
-  width: 100%;
-  height: 100%;
-  background-color: #222;
-}
-
-.cell.snake.p1 { background-color: #8ca33e; }
-.cell.snake.p2 { background-color: #3498db; }
-
-.cell.head {
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.cell.food {
-  background-color: #e74c3c;
-  border-radius: 50%;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.8); }
-  100% { transform: scale(1); }
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .overlay {
@@ -79,69 +70,120 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(6, 6, 12, 0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  backdrop-filter: blur(5px);
+}
+
+.overlay h2 {
+  font-size: 3rem;
+  color: #ff0055;
+  text-shadow: 0 0 15px rgba(255, 0, 85, 0.7);
+  margin: 0;
+  letter-spacing: 5px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 30px;
+  background: rgba(10, 10, 20, 0.8);
+  border: 2px solid #00d2ff;
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
 }
 
 button {
-  background-color: #444;
-  color: #fff;
-  border: 2px solid #8ca33e;
-  padding: 15px 40px;
+  background-color: #00d2ff;
+  color: #06060c;
+  border: none;
+  padding: 12px 40px;
   font-size: 1.2rem;
-  font-family: inherit;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s;
+  border-radius: 4px;
+  min-width: 250px;
+  box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+  transition: all 0.2s ease-in-out;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-button.secondary-btn {
+button:hover {
+  background-color: #80e5ff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(128, 229, 255, 0.5);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.secondary-btn {
   background-color: transparent;
-  border: 1px solid #666;
-  color: #8ca33e;
-  padding: 10px 20px;
-  font-size: 1rem;
+  color: #00d2ff;
+  border: 2px solid #00d2ff;
 }
 
-button.secondary-btn:hover {
-  border-color: #8ca33e;
-  background-color: rgba(140, 163, 62, 0.1);
+.secondary-btn:hover {
+  background-color: rgba(0, 210, 255, 0.1);
+  color: #80e5ff;
 }
 
+.controls-info {
+  margin-top: 15px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.controls-info p {
+  margin: 5px 0;
+}
+
+/* Tech Architecture View */
 .tech-arch-view {
-  max-width: 800px;
-  text-align: left;
-  background-color: #222;
-  padding: 40px;
-  border: 2px solid #8ca33e;
+  background: rgba(10, 10, 20, 0.95);
+  border: 2px solid #00d2ff;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 700px;
   max-height: 80vh;
   overflow-y: auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+}
+
+.markdown-content {
+  color: #ccc;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .markdown-content h1 {
+  color: #00d2ff;
   font-size: 2rem;
-  color: #8ca33e;
-  border-bottom: 2px solid #333;
+  border-bottom: 1px solid rgba(0, 210, 255, 0.2);
   padding-bottom: 10px;
-  margin-bottom: 20px;
+  margin-top: 0;
 }
 
 .markdown-content h2 {
-  font-size: 1.5rem;
-  color: #a8bc4a;
+  color: #ff007f;
+  font-size: 1.3rem;
   margin-top: 20px;
 }
 
 .markdown-content p, .markdown-content li {
-  line-height: 1.6;
-  color: #ccc;
-  margin-bottom: 10px;
-}
-
-.markdown-content li {
-  margin-left: 20px;
+  line-height: 1.5;
+  font-size: 0.95rem;
 }
