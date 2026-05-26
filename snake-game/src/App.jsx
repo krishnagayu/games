@@ -8,7 +8,7 @@ const INITIAL_SNAKE = [
   { x: 10, y: 12 },
 ];
 const INITIAL_DIRECTION = { x: 0, y: -1 }; // Up
-const INITIAL_SPEED = 220;
+const INITIAL_SPEED = 400; // Slower default speed
 
 // Neon/Retro Wall Obstacles for Maze Mode (safe from starting path at column 10)
 const MAZE_WALLS = [
@@ -140,106 +140,69 @@ function App() {
   const moveSnake = useCallback(() => {
     if (isGameOver || isPaused) return;
 
-    setDirection((currDir) => {
-      const activeDir = nextDirectionRef.current;
-      setSnake((prevSnake) => {
-        const head = prevSnake[0];
-        const newHead = {
-          x: (head.x + activeDir.x + GRID_SIZE) % GRID_SIZE,
-          y: (head.y + activeDir.y + GRID_SIZE) % GRID_SIZE,
-        };
+    setSnake((prevSnake) => {
+      const head = prevSnake[0];
+      const dir = nextDirectionRef.current;
+      
+      const newHead = {
+        x: (head.x + dir.x + GRID_SIZE) % GRID_SIZE,
+        y: (head.y + dir.y + GRID_SIZE) % GRID_SIZE,
+      };
 
-        // Check self-collision
-        if (prevSnake.some((segment) => segment.x === newHead.x && segment.y === newHead.y)) {
-          setIsGameOver(true);
-          setIsPaused(true);
-          playSynthSound('die');
-          return prevSnake;
-        }
+      if (prevSnake.some((s) => s.x === newHead.x && s.y === newHead.y) ||
+          (gameMode === 'maze' && MAZE_WALLS.some((w) => w.x === newHead.x && w.y === newHead.y))) {
+        setIsGameOver(true);
+        setIsPaused(true);
+        playSynthSound('die');
+        return prevSnake;
+      }
 
-        // Check wall collision in maze mode
-        if (gameMode === 'maze' && MAZE_WALLS.some(wall => wall.x === newHead.x && wall.y === newHead.y)) {
-          setIsGameOver(true);
-          setIsPaused(true);
-          playSynthSound('die');
-          return prevSnake;
-        }
-
-        const newSnake = [newHead, ...prevSnake];
-
-        // Check food collision
-        if (newHead.x === food.x && newHead.y === food.y) {
-          setScore((prev) => {
-            const newScore = prev + 10;
-            if (newScore > highScore) {
-              setHighScore(newScore);
-              localStorage.setItem('snakeHighScore', newScore);
-            }
-            return newScore;
-          });
-          playSynthSound('eat');
-          setFood(generateFood(newSnake, gameMode));
-        } else {
-          newSnake.pop();
-        }
-
-        return newSnake;
-      });
-      return activeDir;
+      const newSnake = [newHead, ...prevSnake];
+      if (newHead.x === food.x && newHead.y === food.y) {
+        setScore((s) => {
+          const ns = s + 10;
+          if (ns > highScore) { setHighScore(ns); localStorage.setItem('snakeHighScore', ns); }
+          return ns;
+        });
+        playSynthSound('eat');
+        setFood(generateFood(newSnake, gameMode));
+      } else {
+        newSnake.pop();
+      }
+      return newSnake;
     });
+    // Update visual direction (snake eyes) after movement
+    setDirection(nextDirectionRef.current);
   }, [food, isGameOver, isPaused, gameMode, generateFood, highScore]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (isGameOver) return;
+    if (e.key === ' ') {
+      if (!isGameOver) {
+        setIsPaused(!isPaused);
+        if (!isPaused) playSynthSound('pause');
+      }
+      return;
+    }
+    if (isPaused) return;
+
+    const newDir = { x: 0, y: 0 };
+    switch (e.key) {
+      case 'ArrowUp': newDir.y = -1; break;
+      case 'ArrowDown': newDir.y = 1; break;
+      case 'ArrowLeft': newDir.x = -1; break;
+      case 'ArrowRight': newDir.x = 1; break;
+      default: return;
+    }
+
+    if (newDir.x !== -direction.x || newDir.y !== -direction.y) {
+      nextDirectionRef.current = newDir;
+      playSynthSound('turn');
+    }
+  }, [direction, isGameOver, isPaused]);
 
   // Handle keys
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      initAudio();
-      let pSound = false;
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'w':
-          if (direction.y === 0) {
-            nextDirectionRef.current = { x: 0, y: -1 };
-            pSound = true;
-          }
-          break;
-        case 'ArrowDown':
-        case 's':
-          if (direction.y === 0) {
-            nextDirectionRef.current = { x: 0, y: 1 };
-            pSound = true;
-          }
-          break;
-        case 'ArrowLeft':
-        case 'a':
-          if (direction.x === 0) {
-            nextDirectionRef.current = { x: -1, y: 0 };
-            pSound = true;
-          }
-          break;
-        case 'ArrowRight':
-        case 'd':
-          if (direction.x === 0) {
-            nextDirectionRef.current = { x: 1, y: 0 };
-            pSound = true;
-          }
-          break;
-        case ' ':
-          if (!isGameOver) {
-            setIsPaused((prev) => {
-              const next = !prev;
-              playSynthSound('pause');
-              return next;
-            });
-          }
-          break;
-        default:
-          break;
-      }
-      if (pSound && !isPaused && !isGameOver) {
-        playSynthSound('turn');
-      }
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [direction, isGameOver, isPaused]);

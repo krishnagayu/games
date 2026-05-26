@@ -68,6 +68,8 @@ h1 {
   box-shadow: 0 0 10px rgba(140, 163, 62, 0.4);
 }
 
+
+
 .stats {
   display: flex;
   justify-content: space-between;
@@ -77,6 +79,12 @@ h1 {
   color: #8ca33e;
   text-shadow: 0 0 5px rgba(140, 163, 62, 0.3);
 }
+/* Ensure canvas is not stretched and aligns with grid */
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
 
 .canvas-wrapper {
   position: relative;
