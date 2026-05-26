@@ -68,7 +68,7 @@ body {
   left: 0;
   width: 100%;
   height: 120%;
-  transform: rotateX(28deg); /* Tilts the road backward */
+  transform: none; /* Straight lane */
   transform-origin: bottom center;
 }
 
