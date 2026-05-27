@@ -650,8 +650,15 @@ function advanceAdaptiveSession() {
     sess.selectedOption = null;
     sess.textInput = '';
     
-    // Generate next question
-    sess.currentQuestion = generateQuestion(sess.chapterId, nextLvl);
+    // Generate next question (with duplicate detection to prevent repeating same/similar text)
+    let nextQ = null;
+    let attempts = 0;
+    do {
+      nextQ = generateQuestion(sess.chapterId, nextLvl);
+      attempts++;
+    } while (sess.questions.some(q => q.text === nextQ.text) && attempts < 15);
+    
+    sess.currentQuestion = nextQ;
     sess.questions.push(sess.currentQuestion);
     
     navigateTo('session');
