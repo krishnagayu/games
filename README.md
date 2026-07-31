@@ -8,6 +8,7 @@ This repository contains a collection of fun, interactive games built with moder
 - **neon-racer**: A fast-paced, high-octane racing game with a neon aesthetic.
 - **snake-game**: The classic snake game with a modern touch.
 - **snake-game-multiplayer**: Play snake with friends online!
+- **space-rocket-defense**: A sci-fi tower defense game where you build laser, frost, and plasma turrets to protect the rocket base from alien waves!
 
 ---
 
