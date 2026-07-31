@@ -1,71 +1,57 @@
-# Games Collection
+# 🎮 Kids Web Games Collection
 
-This repository contains a collection of fun, interactive games built with modern web technologies like React, TypeScript, and Vite.
-
-## Available Games
-
-- **balloon-shooter**: An interactive balloon shooting game.
-- **neon-racer**: A fast-paced, high-octane racing game with a neon aesthetic.
-- **snake-game**: The classic snake game with a modern touch.
-- **snake-game-multiplayer**: Play snake with friends online!
-- **space-rocket-defense**: A sci-fi tower defense game where you build laser, frost, and plasma turrets to protect the rocket base from alien waves!
+Welcome to the **Kids Web Games Collection**! A suite of fun, interactive, educational, and arcade HTML5 games built with modern web technologies (**React 19, TypeScript, Vite, and HTML5 Canvas**).
 
 ---
 
-## How to Get Started
+## 🚀 Featured Games & Educational Coaches
 
-Follow these steps to sync the repository, install the necessary software, and start playing!
+| Game | Description | Highlights |
+| :--- | :--- | :--- |
+| **🚀 Space Rocket Defense** | Sci-Fi Tower Defense with **2-Player Level Creator & Challenge Mode**! | Draw custom paths, set starting budgets, ban blaster types & unleash custom alien waves against your friends! Includes Web Audio sound synth & Orbital Star Strikes. |
+| **🎈 Balloon Shooter** | Fast-paced interactive popping game. | Fun reflex practice with vibrant balloon physics. |
+| **🏎️ Neon Racer** | High-octane arcade racing game. | Neon aesthetic with smooth controls and obstacles. |
+| **🐍 Snake Game** | Modernized classic snake game. | Smooth grid movement & score tracking. |
+| **🌐 Snake Game (Multiplayer)** | Online multiplayer snake. | Play with friends locally or over the network! |
+| **📚 Class 5 & 7 Learning Coaches** | Interactive Math & English learning modules. | Fun educational coaching tools for school topics. |
+
+---
+
+## 🎮 Quick Start Guide
 
 ### 1. Prerequisites
 
-Before you begin, ensure you have the following installed on your machine:
+Ensure you have **Node.js (v18.0 or higher)** installed on your machine:
+* [Download Node.js](https://nodejs.org/)
 
-- **Git**: To clone and sync the repository. [Download Git](https://git-scm.com/downloads)
-- **Node.js (v18.0 or higher)**: To run the games locally. [Download Node.js](https://nodejs.org/)
-
-### 2. Clone the Repository
-
-Open your terminal or command prompt and run the following command to clone the repository:
+### 2. Clone & Play
 
 ```bash
+# 1. Clone the repository
 git clone https://github.com/krishnagayu/games.git
 cd games
-```
 
-### 3. Install Dependencies and Run a Game
+# 2. Pick a game (e.g. Space Rocket Defense)
+cd space-rocket-defense
 
-Each game is located in its own subfolder. To play a game, navigate into its folder, install its dependencies, and start the development server.
-
-Example: Playing **balloon-shooter**
-
-```bash
-# Navigate to the game folder
-cd balloon-shooter
-
-# Install dependencies
+# 3. Install dependencies & start dev server
 npm install
-
-# Start the game
 npm run dev
 ```
 
-The game will be available at the URL shown in your terminal (usually `http://localhost:5173`).
-
-### 4. Syncing Updates
-
-To get the latest updates and new games, run:
-
-```bash
-git pull origin main
-```
+Open your browser at `http://localhost:5173/` to start playing! 🚀✨
 
 ---
 
-## Technical Stack
+## 🛠️ Tech Stack & Architecture
 
-- **Framework**: React
-- **Build Tool**: Vite
-- **Styling**: Vanilla CSS
-- **Language**: JavaScript / TypeScript
+- **Framework**: React 19
+- **Build Tool**: Vite 8
+- **Rendering**: HTML5 High-FPS `<canvas>` 
+- **Audio Engine**: Custom Web Audio API Synthesizers (Zero external audio asset downloads)
+- **Styling**: Modern Vanilla CSS with dark mode neon glassmorphism
+- **Language**: TypeScript
 
-Enjoy the games! 🎮✨
+---
+
+Happy gaming! 🕹️✨
