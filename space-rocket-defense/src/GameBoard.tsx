@@ -59,17 +59,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   sounds.enabled = soundEnabled;
 
-  // Custom helper for state with immediate ref access
-  function useRefState<T>(initialValue: T): [T, (val: T) => void] {
-    const [state, setState] = useState<T>(initialValue);
-    const ref = useRef<T>(initialValue);
-    const update = (val: T) => {
-      ref.current = val;
-      setState(val);
-    };
-    return [state, update];
-  }
-
   const [selectedTower, setSelectedTowerState] = useState<Tower | null>(null);
   const setSelectedTower = (val: Tower | null) => {
     selectedTowerRef.current = val;
