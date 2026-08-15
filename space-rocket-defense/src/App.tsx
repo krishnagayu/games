@@ -18,17 +18,18 @@ export function App() {
 
   // Live HUD Stats
   const [stats, setStats] = useState({
-    credits: 350,
-    lives: 20,
+    credits: 250,
+    lives: 15,
     wave: 1,
-    score: 0
+    score: 0,
+    towerCount: 0
   });
 
   const [orbitalStrikeRequested, setOrbitalStrikeRequested] = useState<boolean>(false);
   const [orbitalStrikeCooldown, setOrbitalStrikeCooldown] = useState<boolean>(false);
 
-  const handleStatsUpdate = (credits: number, lives: number, wave: number, score: number) => {
-    setStats({ credits, lives, wave, score });
+  const handleStatsUpdate = (credits: number, lives: number, wave: number, score: number, towerCount: number) => {
+    setStats({ credits, lives, wave, score, towerCount });
   };
 
   const handleGameOver = (finalScore: number) => {
@@ -142,6 +143,8 @@ export function App() {
             lives={stats.lives}
             wave={stats.wave}
             score={stats.score}
+            towerCount={stats.towerCount}
+            maxTowers={customChallenge ? customChallenge.maxTowers : 7}
             selectedBuildType={selectedBuildType}
             onSelectBuildType={setSelectedBuildType}
             allowedTowers={customChallenge?.allowedTowers}

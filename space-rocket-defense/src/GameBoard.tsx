@@ -11,7 +11,7 @@ interface GameBoardProps {
   isPaused: boolean;
   selectedBuildType: TowerType | null;
   soundEnabled: boolean;
-  onStatsUpdate: (credits: number, lives: number, wave: number, score: number) => void;
+  onStatsUpdate: (credits: number, lives: number, wave: number, score: number, towerCount: number) => void;
   onGameOver: (score: number) => void;
   onVictory: (score: number) => void;
   orbitalStrikeRequested: boolean;
@@ -113,35 +113,35 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const pixelX = startPos.x * CELL_SIZE + CELL_SIZE / 2;
     const pixelY = startPos.y * CELL_SIZE + CELL_SIZE / 2;
 
-    const waveMult = 1 + (waveRef.current - 1) * 0.18;
+    const waveMult = 1 + (waveRef.current - 1) * 0.28; // Increased HP scaling per wave
 
-    let hp = 40 * waveMult;
-    let speed = 1.6;
+    let hp = 55 * waveMult;
+    let speed = 1.8;
     let color = '#33ff57';
     let size = 14;
-    let reward = 15;
+    let reward = 10; // Reduced reward
     let name = 'Blobbot';
 
     if (type === 'slime') {
-      hp = 30 * waveMult;
-      speed = 2.4;
+      hp = 45 * waveMult;
+      speed = 2.7;
       color = '#00f0ff';
       size = 11;
-      reward = 20;
+      reward = 12;
       name = 'Space Slime';
     } else if (type === 'saucer') {
-      hp = 70 * waveMult;
-      speed = 1.9;
+      hp = 95 * waveMult;
+      speed = 2.2;
       color = '#ff00aa';
       size = 16;
-      reward = 30;
+      reward = 18;
       name = 'Speedy Saucer';
     } else if (type === 'boss') {
-      hp = 450 * waveMult;
-      speed = 1.0;
+      hp = 650 * waveMult;
+      speed = 1.2;
       color = '#ffbb00';
       size = 24;
-      reward = 150;
+      reward = 80;
       name = 'Nebula Titan Boss';
     }
 
@@ -415,7 +415,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             creditsRef.current,
             livesRef.current,
             waveRef.current,
-            scoreRef.current
+            scoreRef.current,
+            towersRef.current.length
           );
         }
       }
@@ -673,15 +674,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     // Try building a new tower
     if (selectedBuildType) {
       const config = TOWER_CONFIGS[selectedBuildType];
+      const maxAllowed = customChallenge ? customChallenge.maxTowers : 7;
 
-      if (creditsRef.current < config.cost) {
-        return; // Not enough credits
+      if (towersRef.current.length >= maxAllowed) {
+        alert(`Maximum tower limit (${maxAllowed}) reached! Sell or plan strategically!`);
+        return;
       }
 
-      // Max towers limit for custom challenge
-      if (customChallenge && towersRef.current.length >= customChallenge.maxTowers) {
-        alert(`Max tower limit (${customChallenge.maxTowers}) reached for this challenge!`);
-        return;
+      // Cost increases by +15% per placed tower
+      const dynamicCost = Math.round(config.cost * (1 + towersRef.current.length * 0.15));
+
+      if (creditsRef.current < dynamicCost) {
+        return; // Not enough credits
       }
 
       const isPathCell = activePath.some(p => p.x === col && p.y === row);
@@ -704,7 +708,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         };
 
         towersRef.current.push(newTower);
-        creditsRef.current -= config.cost;
+        creditsRef.current -= dynamicCost;
         setSelectedTower(newTower);
         sounds.playLaser();
       }

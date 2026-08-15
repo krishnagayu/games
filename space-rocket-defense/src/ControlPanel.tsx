@@ -7,6 +7,8 @@ interface ControlPanelProps {
   lives: number;
   wave: number;
   score: number;
+  towerCount: number;
+  maxTowers: number;
   selectedBuildType: TowerType | null;
   onSelectBuildType: (type: TowerType | null) => void;
   allowedTowers?: Record<TowerType, boolean>;
@@ -25,6 +27,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   lives,
   wave,
   score,
+  towerCount,
+  maxTowers,
   selectedBuildType,
   onSelectBuildType,
   allowedTowers,
@@ -63,27 +67,31 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
       </div>
 
-      {/* Credits & Rocket Base HP */}
+      {/* Credits, Island HP & Tower Limit */}
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '8px',
         background: '#f1f5f9',
-        padding: '12px 16px',
+        padding: '10px 12px',
         borderRadius: '16px',
         border: '1px solid #e2e8f0'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '22px' }}>🪙</span>
-          <div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 800 }}>GOLD COINS</div>
-            <div style={{ fontSize: '18px', fontWeight: '800', color: '#059669' }}>{credits}</div>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ fontSize: '18px' }}>🪙</span>
+          <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 800 }}>GOLD</div>
+          <div style={{ fontSize: '15px', fontWeight: '800', color: '#059669' }}>{credits}</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '22px' }}>🏝️</span>
-          <div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 800 }}>ISLAND HP</div>
-            <div style={{ fontSize: '18px', fontWeight: '800', color: '#e11d48' }}>{lives}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ fontSize: '18px' }}>🏝️</span>
+          <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 800 }}>HP</div>
+          <div style={{ fontSize: '15px', fontWeight: '800', color: '#e11d48' }}>{lives}</div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ fontSize: '18px' }}>🏰</span>
+          <div style={{ fontSize: '9px', color: '#64748b', fontWeight: 800 }}>TOWERS</div>
+          <div style={{ fontSize: '15px', fontWeight: '800', color: towerCount >= maxTowers ? '#e11d48' : '#0284c7' }}>
+            {towerCount}/{maxTowers}
           </div>
         </div>
       </div>
@@ -99,7 +107,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             .map(type => {
             const config = TOWER_CONFIGS[type];
             const isSelected = selectedBuildType === type;
-            const canAfford = credits >= config.cost;
+            const dynamicCost = Math.round(config.cost * (1 + towerCount * 0.15));
+            const canAfford = credits >= dynamicCost && towerCount < maxTowers;
 
             return (
               <button
@@ -124,7 +133,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 <span style={{ fontSize: '26px', marginBottom: '4px' }}>{config.icon}</span>
                 <span style={{ fontSize: '13px', fontWeight: '800', color: '#1e293b' }}>{config.name}</span>
                 <span style={{ fontSize: '12px', fontWeight: '700', color: '#059669', marginTop: '2px' }}>
-                  🪙 {config.cost}
+                  🪙 {dynamicCost}
                 </span>
               </button>
             );
