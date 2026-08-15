@@ -18,7 +18,7 @@ export function App() {
 
   // Live HUD Stats
   const [stats, setStats] = useState({
-    credits: 250,
+    credits: 450,
     lives: 15,
     wave: 1,
     score: 0,
