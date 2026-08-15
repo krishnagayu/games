@@ -48,6 +48,65 @@ type Game struct {
 	leftBoundary []int
 }
 
+// System audio sound synthesizer using terminal bell / paplay / speaker tones
+func playSound(soundType string) {
+	go func() {
+		switch soundType {
+		case "coin":
+			// High pitch coin chime
+			exec.Command("paplay", "/usr/share/sounds/freedesktop/stereo/bell.oga").Run()
+			fmt.Print("\007")
+		case "turbo":
+			// Fast double beep turbo sound
+			fmt.Print("\007")
+			time.Sleep(50 * time.Millisecond)
+			fmt.Print("\007")
+		case "shield":
+			// Shield activation chime
+			fmt.Print("\007")
+		case "crash":
+			// Low crash sound
+			exec.Command("paplay", "/usr/share/sounds/freedesktop/stereo/dialog-warning.oga").Run()
+			fmt.Print("\007")
+		}
+	}()
+}
+
+// Background retro engine arcade music loop synthesizer
+func startArcadeMusic(g *Game) {
+	notes := []time.Duration{
+		120 * time.Millisecond,
+		160 * time.Millisecond,
+		120 * time.Millisecond,
+		200 * time.Millisecond,
+	}
+
+	go func() {
+		noteIndex := 0
+		for {
+			g.mu.Lock()
+			isOver := g.gameOver
+			isTurbo := g.turboTimer > 0
+			g.mu.Unlock()
+
+			if isOver {
+				break
+			}
+
+			// Terminal arcade rhythm beat
+			fmt.Print("\007")
+
+			delay := notes[noteIndex%len(notes)]
+			if isTurbo {
+				delay = delay / 2 // Fast engine beat during Turbo
+			}
+			noteIndex++
+
+			time.Sleep(delay + 180*time.Millisecond)
+		}
+	}()
+}
+
 func newGame() *Game {
 	g := &Game{
 		playerX:      width / 2,
@@ -78,6 +137,9 @@ func main() {
 	// Clear terminal screen
 	fmt.Print("\033[2J\033[?25l")
 	defer fmt.Print("\033[?25h") // Restore cursor
+
+	// Start background arcade rhythm sound engine
+	startArcadeMusic(game)
 
 	// Input listener goroutine
 	go func() {
@@ -126,6 +188,7 @@ func main() {
 		game.mu.Unlock()
 	}
 
+	playSound("crash")
 	fmt.Printf("\033[%d;1H\033[0m\n", height+3)
 	fmt.Println("========================================")
 	fmt.Printf("   🏁 GAME OVER! Final Score: %d 🏁\n", game.score)
@@ -146,7 +209,7 @@ func (g *Game) update() {
 		g.shieldTimer -= 0.033
 	}
 
-	// Move road curvs
+	// Move road curves
 	for i := height - 1; i > 0; i-- {
 		g.leftBoundary[i] = g.leftBoundary[i-1]
 	}
@@ -196,6 +259,7 @@ func (g *Game) update() {
 			if MathAbs(obs.x-g.playerX) <= 1 {
 				if g.shieldTimer > 0 {
 					// Shield saved player
+					playSound("shield")
 					g.obstacles = append(g.obstacles[:i], g.obstacles[i+1:]...)
 					continue
 				}
@@ -220,10 +284,13 @@ func (g *Game) update() {
 				if pw.char == '🪙' {
 					g.coins += 1
 					g.score += 50
+					playSound("coin")
 				} else if pw.char == '⚡' {
 					g.turboTimer = 3.0 // 3 seconds turbo
+					playSound("turbo")
 				} else if pw.char == '🛡' {
 					g.shieldTimer = 5.0 // 5 seconds shield
+					playSound("shield")
 				}
 				g.powerups = append(g.powerups[:i], g.powerups[i+1:]...)
 				continue
