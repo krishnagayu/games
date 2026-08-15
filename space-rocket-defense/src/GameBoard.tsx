@@ -509,7 +509,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       ctx.textBaseline = 'middle';
       ctx.fillText('🚀', resortX, resortY);
 
-      // Draw Hover Build Indicator
+      // Draw Hover Build Indicator & Tower Placement Preview
       const currentHover = hoverGridRef.current;
       const currentBuildType = selectedBuildTypeRef.current;
       if (currentHover && currentBuildType) {
@@ -518,16 +518,50 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         const canBuild = !isPathCell && (customChallenge ? true : mapGridBuildable) &&
           !towersRef.current.some(t => Math.floor(t.x / CELL_SIZE) === currentHover.col && Math.floor(t.y / CELL_SIZE) === currentHover.row);
         
-        ctx.fillStyle = canBuild ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)';
-        ctx.fillRect(currentHover.col * CELL_SIZE, currentHover.row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        const px = currentHover.col * CELL_SIZE;
+        const py = currentHover.row * CELL_SIZE;
+
+        // High contrast grid cell highlight box
+        ctx.fillStyle = canBuild ? 'rgba(34, 197, 94, 0.45)' : 'rgba(239, 68, 68, 0.5)';
+        ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE);
         
-        // Draw Range Outline Preview
+        // Thick white outline around target tile
+        ctx.strokeStyle = canBuild ? '#ffffff' : '#dc2626';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(px + 1.5, py + 1.5, CELL_SIZE - 3, CELL_SIZE - 3);
+
         const cfg = TOWER_CONFIGS[currentBuildType];
-        ctx.strokeStyle = canBuild ? cfg.color : '#ef4444';
-        ctx.lineWidth = 2;
+        const centerX = px + CELL_SIZE / 2;
+        const centerY = py + CELL_SIZE / 2;
+
+        if (canBuild) {
+          // Semi-transparent ghost tower icon preview
+          ctx.save();
+          ctx.globalAlpha = 0.75;
+          ctx.fillStyle = '#78350f';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = cfg.color;
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 14, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(cfg.icon, centerX, centerY);
+          ctx.restore();
+        }
+
+        // Dashed attack range preview circle
+        ctx.strokeStyle = canBuild ? '#0284c7' : '#dc2626';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 6]);
         ctx.beginPath();
-        ctx.arc(currentHover.col * CELL_SIZE + CELL_SIZE / 2, currentHover.row * CELL_SIZE + CELL_SIZE / 2, cfg.range, 0, Math.PI * 2);
+        ctx.arc(centerX, centerY, cfg.range, 0, Math.PI * 2);
         ctx.stroke();
+        ctx.setLineDash([]);
       }
 
       // Draw Island Defense Towers
