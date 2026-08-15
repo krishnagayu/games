@@ -1,6 +1,7 @@
 import './style.css';
 import { chapters, worksheets } from './data.js';
 import { generateQuestion } from './generators.js';
+import { renderDiagram } from './diagrams.js';
 
 // ───────── State Management ─────────
 const state = {
@@ -490,6 +491,14 @@ function createActiveSessionView() {
   qText.className = 'question-text';
   qText.textContent = q.text;
   card.appendChild(qText);
+
+  // Render SVG diagram if available
+  const diagramHtml = renderDiagram(q);
+  if (diagramHtml) {
+    const diagramContainer = document.createElement('div');
+    diagramContainer.innerHTML = diagramHtml;
+    card.appendChild(diagramContainer);
+  }
   
   const answerSection = document.createElement('div');
   answerSection.id = 'answer-section';
