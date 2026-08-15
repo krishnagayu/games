@@ -54,17 +54,18 @@ function generateBuildableGrid(path: Position[]): boolean[][] {
 
 export const MAPS: MapData[] = [
   {
-    id: 'neon-alpha',
-    name: 'Neon Alpha Colony',
-    themeColor: '#0a0f24',
+    id: 'emerald-lagoon',
+    name: 'Emerald Island Lagoon',
+    themeColor: '#10b981', // vibrant lush palm grass
     path: path1,
     buildableGrid: generateBuildableGrid(path1)
   },
   {
-    id: 'crystal-crater',
-    name: 'Crystal Galaxy Crater',
-    themeColor: '#120a24',
+    id: 'sunken-coral',
+    name: 'Sunken Coral Beach',
+    themeColor: '#0284c7', // tropical turquoise shore
     path: path2,
     buildableGrid: generateBuildableGrid(path2)
   }
 ];
+

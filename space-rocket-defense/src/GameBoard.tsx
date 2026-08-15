@@ -47,8 +47,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const enemiesToSpawnRef = useRef<EnemyType[]>([]);
   const spawnTimerRef = useRef<number>(0);
   
-  const [selectedTower, setSelectedTower] = useRefState<Tower | null>(null);
-  const [hoverGrid, setHoverGrid] = useState<{ col: number; row: number } | null>(null);
+  const selectedTowerRef = useRef<Tower | null>(null);
+  const hoverGridRef = useRef<{ col: number; row: number } | null>(null);
+  const selectedBuildTypeRef = useRef<TowerType | null>(selectedBuildType);
+  selectedBuildTypeRef.current = selectedBuildType;
 
   // Use map path or custom painted challenge path
   const currentMap = MAPS[currentMapIndex] || MAPS[0];
@@ -67,6 +69,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     };
     return [state, update];
   }
+
+  const [selectedTower, setSelectedTowerState] = useState<Tower | null>(null);
+  const setSelectedTower = (val: Tower | null) => {
+    selectedTowerRef.current = val;
+    setSelectedTowerState(val);
+  };
 
   // Generate enemy waves dynamically based on wave number
   const startNextWave = useCallback(() => {
@@ -388,34 +396,49 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
 
         // --- 6. UPDATE PARTICLES ---
+        if (particlesRef.current.length > 200) {
+          particlesRef.current.splice(0, particlesRef.current.length - 200);
+        }
         for (let i = particlesRef.current.length - 1; i >= 0; i--) {
           const pt = particlesRef.current[i];
           pt.x += pt.vx;
           pt.y += pt.vy;
-          pt.life -= 0.03 * gameSpeed;
+          pt.life -= 0.03 * Math.max(0.1, gameSpeed);
           if (pt.life <= 0) {
             particlesRef.current.splice(i, 1);
           }
         }
 
-        // Sync React Stats UI
-        onStatsUpdate(
-          creditsRef.current,
-          livesRef.current,
-          waveRef.current,
-          scoreRef.current
-        );
+        // Sync React Stats UI (throttled to 10 FPS to prevent React re-render lag during 60 FPS canvas loop)
+        if (Math.floor(Date.now() / 100) !== Math.floor((Date.now() - 16) / 100)) {
+          onStatsUpdate(
+            creditsRef.current,
+            livesRef.current,
+            waveRef.current,
+            scoreRef.current
+          );
+        }
       }
 
       // --- 7. RENDERING CANVAS ---
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw Grid & Map Terrain
+      // 1. Draw Island Base Terrain (Grass & Ocean Shore)
       ctx.fillStyle = currentThemeColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Grid Lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      // Subtle grass texture dots/blades
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      for (let r = 0; r < GRID_ROWS; r++) {
+        for (let c = 0; c < GRID_COLS; c++) {
+          if ((r + c) % 2 === 0) {
+            ctx.fillRect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          }
+        }
+      }
+
+      // Soft Grid Outline
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
       ctx.lineWidth = 1;
       for (let r = 0; r <= GRID_ROWS; r++) {
         ctx.beginPath();
@@ -430,10 +453,31 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.stroke();
       }
 
-      // Draw Path Track
+      // Decorative Palm Trees & Shore Rocks
+      ctx.font = '16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // Fixed spots for island decorations
+      [
+        { c: 1, r: 1, icon: '🌴' },
+        { c: 8, r: 0, icon: '🌴' },
+        { c: 14, r: 1, icon: '🌴' },
+        { c: 0, r: 8, icon: '🌺' },
+        { c: 15, r: 5, icon: '🌴' },
+        { c: 6, r: 9, icon: '🌺' },
+        { c: 12, r: 9, icon: '🌴' },
+      ].forEach(decor => {
+        const isPathCell = activePath.some(p => p.x === decor.c && p.y === decor.r);
+        if (!isPathCell) {
+          ctx.fillText(decor.icon, decor.c * CELL_SIZE + CELL_SIZE / 2, decor.r * CELL_SIZE + CELL_SIZE / 2);
+        }
+      });
+
+      // 2. Draw Sandy Beach Path Track
       if (activePath.length > 1) {
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
-        ctx.lineWidth = CELL_SIZE * 0.65;
+        // Outer Sand Path Border
+        ctx.strokeStyle = '#fde047'; // bright sunny sand border
+        ctx.lineWidth = CELL_SIZE * 0.75;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
@@ -445,112 +489,146 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
         ctx.stroke();
 
-        // Inner glowing path core
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-        ctx.lineWidth = 4;
+        // Inner Warm Sandy Beach Track
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = CELL_SIZE * 0.6;
+        ctx.stroke();
+
+        // Path Direction Arrows / Footprints
+        ctx.strokeStyle = 'rgba(217, 119, 6, 0.4)';
+        ctx.lineWidth = 2;
         ctx.stroke();
       }
 
-      // Draw End Base Rocket
+      // Draw End Goal Island Resort Base
       const endPt = activePath[activePath.length - 1];
-      const rocketX = endPt.x * CELL_SIZE + CELL_SIZE / 2;
-      const rocketY = endPt.y * CELL_SIZE + CELL_SIZE / 2;
+      const resortX = endPt.x * CELL_SIZE + CELL_SIZE / 2;
+      const resortY = endPt.y * CELL_SIZE + CELL_SIZE / 2;
 
-      ctx.fillStyle = '#ff3366';
+      // Base Halo
+      ctx.fillStyle = 'rgba(254, 243, 199, 0.8)';
       ctx.beginPath();
-      ctx.arc(rocketX, rocketY, 20, 0, Math.PI * 2);
+      ctx.arc(resortX, resortY, 24, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '18px sans-serif';
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.font = '22px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🚀', rocketX, rocketY);
+      ctx.fillText('🚀', resortX, resortY);
 
       // Draw Hover Build Indicator
-      if (hoverGrid && selectedBuildType) {
-        const isPathCell = activePath.some(p => p.x === hoverGrid.col && p.y === hoverGrid.row);
-        const mapGridBuildable = currentMap.buildableGrid[hoverGrid.row]?.[hoverGrid.col] ?? true;
+      const currentHover = hoverGridRef.current;
+      const currentBuildType = selectedBuildTypeRef.current;
+      if (currentHover && currentBuildType) {
+        const isPathCell = activePath.some(p => p.x === currentHover.col && p.y === currentHover.row);
+        const mapGridBuildable = currentMap.buildableGrid[currentHover.row]?.[currentHover.col] ?? true;
         const canBuild = !isPathCell && (customChallenge ? true : mapGridBuildable) &&
-          !towersRef.current.some(t => Math.floor(t.x / CELL_SIZE) === hoverGrid.col && Math.floor(t.y / CELL_SIZE) === hoverGrid.row);
+          !towersRef.current.some(t => Math.floor(t.x / CELL_SIZE) === currentHover.col && Math.floor(t.y / CELL_SIZE) === currentHover.row);
         
-        ctx.fillStyle = canBuild ? 'rgba(0, 255, 170, 0.3)' : 'rgba(255, 0, 85, 0.3)';
-        ctx.fillRect(hoverGrid.col * CELL_SIZE, hoverGrid.row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        ctx.fillStyle = canBuild ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+        ctx.fillRect(currentHover.col * CELL_SIZE, currentHover.row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         
         // Draw Range Outline Preview
-        const cfg = TOWER_CONFIGS[selectedBuildType];
-        ctx.strokeStyle = canBuild ? cfg.color : '#ff0055';
-        ctx.lineWidth = 1.5;
+        const cfg = TOWER_CONFIGS[currentBuildType];
+        ctx.strokeStyle = canBuild ? cfg.color : '#ef4444';
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(hoverGrid.col * CELL_SIZE + CELL_SIZE / 2, hoverGrid.row * CELL_SIZE + CELL_SIZE / 2, cfg.range, 0, Math.PI * 2);
+        ctx.arc(currentHover.col * CELL_SIZE + CELL_SIZE / 2, currentHover.row * CELL_SIZE + CELL_SIZE / 2, cfg.range, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // Draw Towers
+      // Draw Island Defense Towers
       towersRef.current.forEach(t => {
-        // Base
+        // Wooden/Stone Pedestal
+        ctx.fillStyle = '#78350f';
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, 20, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Inner Color Ring
         ctx.fillStyle = TOWER_CONFIGS[t.type].color;
         ctx.beginPath();
-        ctx.arc(t.x, t.y, 18, 0, Math.PI * 2);
+        ctx.arc(t.x, t.y, 16, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.stroke();
 
         // Turret Barrel Angle
         ctx.save();
         ctx.translate(t.x, t.y);
         ctx.rotate(t.angle);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, -4, 16, 8);
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, -4, 18, 8);
         ctx.restore();
 
         // Tower Icon
         ctx.fillStyle = '#ffffff';
-        ctx.font = '14px sans-serif';
+        ctx.font = '16px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(TOWER_CONFIGS[t.type].icon, t.x, t.y);
 
         // Selected Tower Range ring
         if (selectedTower?.id === t.id) {
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.lineWidth = 2.5;
+          ctx.setLineDash([6, 6]);
           ctx.beginPath();
           ctx.arc(t.x, t.y, t.range, 0, Math.PI * 2);
           ctx.stroke();
+          ctx.setLineDash([]);
         }
       });
 
-      // Draw Enemies
+      // Draw Invading Aliens/Monsters
       enemiesRef.current.forEach(e => {
+        // Shadow underneath
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.beginPath();
+        ctx.ellipse(e.x, e.y + e.size * 0.5, e.size * 0.8, e.size * 0.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Monster Body
         ctx.fillStyle = e.color;
         ctx.beginPath();
         ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
 
         // Slow/Stun Effect aura
         if (e.slowTimer > 0) {
-          ctx.strokeStyle = '#00f0ff';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#06b6d4';
+          ctx.lineWidth = 3;
           ctx.stroke();
         }
 
         // HP Bar
-        const barW = e.size * 2;
-        const barH = 4;
+        const barW = e.size * 2.2;
+        const barH = 5;
         const hpPercent = Math.max(0, e.hp / e.maxHp);
-        ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        ctx.fillRect(e.x - barW / 2, e.y - e.size - 8, barW, barH);
-        ctx.fillStyle = hpPercent > 0.5 ? '#00ffaa' : hpPercent > 0.25 ? '#ffbb00' : '#ff0055';
-        ctx.fillRect(e.x - barW / 2, e.y - e.size - 8, barW * hpPercent, barH);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fillRect(e.x - barW / 2 - 1, e.y - e.size - 10 - 1, barW + 2, barH + 2);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(e.x - barW / 2, e.y - e.size - 10, barW, barH);
+        ctx.fillStyle = hpPercent > 0.5 ? '#10b981' : hpPercent > 0.25 ? '#f59e0b' : '#ef4444';
+        ctx.fillRect(e.x - barW / 2, e.y - e.size - 10, barW * hpPercent, barH);
       });
 
       // Draw Projectiles
       projectilesRef.current.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
       });
 
       // Draw Particles
@@ -568,7 +646,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     animationFrameId = requestAnimationFrame(gameLoop);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [currentMap, gameSpeed, isPaused, selectedBuildType, selectedTower, hoverGrid, onStatsUpdate, onGameOver, onVictory]);
+  }, [currentMap, gameSpeed, isPaused, onStatsUpdate, onGameOver, onVictory]);
 
   // Handle Canvas Clicking (Building & Selecting Towers)
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -641,7 +719,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const rect = canvas.getBoundingClientRect();
     const col = Math.floor((e.clientX - rect.left) / CELL_SIZE);
     const row = Math.floor((e.clientY - rect.top) / CELL_SIZE);
-    setHoverGrid({ col, row });
+    hoverGridRef.current = { col, row };
   };
 
   return (
@@ -652,11 +730,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         height={GRID_ROWS * CELL_SIZE}
         onClick={handleCanvasClick}
         onMouseMove={handleMouseMove}
-        onMouseLeave={() => setHoverGrid(null)}
+        onMouseLeave={() => { hoverGridRef.current = null; }}
         style={{
-          borderRadius: '12px',
-          boxShadow: '0 8px 32px rgba(0, 240, 255, 0.2)',
-          border: '2px solid rgba(0, 240, 255, 0.4)',
+          borderRadius: '20px',
+          boxShadow: '0 12px 36px rgba(2, 132, 199, 0.3), 0 2px 0 rgba(255, 255, 255, 0.4)',
+          border: '4px solid #ffffff',
           cursor: selectedBuildType ? 'crosshair' : 'pointer',
           display: 'block'
         }}
@@ -668,21 +746,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           onClick={startNextWave}
           style={{
             position: 'absolute',
-            bottom: '20px',
-            right: '20px',
-            padding: '12px 24px',
+            bottom: '24px',
+            right: '24px',
+            padding: '14px 28px',
             fontSize: '18px',
-            fontWeight: 'bold',
+            fontWeight: '800',
+            fontFamily: 'Fredoka, cursive',
             color: '#fff',
-            background: 'linear-gradient(135deg, #00f0ff, #7000ff)',
+            background: 'linear-gradient(135deg, #10b981, #059669)',
             border: 'none',
-            borderRadius: '30px',
-            boxShadow: '0 4px 20px rgba(0, 240, 255, 0.5)',
+            borderRadius: '35px',
+            boxShadow: '0 8px 24px rgba(16, 185, 129, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.4)',
             cursor: 'pointer',
-            transition: 'transform 0.2s'
+            transition: 'transform 0.2s ease'
           }}
         >
-          🚀 Launch Wave {waveRef.current}
+          🏖️ Launch Wave {waveRef.current}
         </button>
       )}
     </div>

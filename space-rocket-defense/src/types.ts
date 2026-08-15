@@ -96,46 +96,46 @@ export interface CustomChallenge {
 export const TOWER_CONFIGS: Record<TowerType, TowerConfig> = {
   laser: {
     type: 'laser',
-    name: 'Laser Turret',
+    name: 'Sunfire Launcher',
     cost: 100,
     range: 120,
     damage: 15,
     fireRate: 2.5,
-    color: '#00f0ff',
-    description: 'Rapid single-target energy laser beam.',
-    icon: '⚡'
+    color: '#f59e0b',
+    description: 'Rapid solar beam launcher powered by island sun rays.',
+    icon: '☀️'
   },
   cryo: {
     type: 'cryo',
-    name: 'Frost Emitter',
+    name: 'Coconut Frost Cannon',
     cost: 150,
     range: 100,
     damage: 5,
     fireRate: 1.0,
-    color: '#00ffaa',
-    description: 'Slows down groups of alien invaders in range.',
-    icon: '🧊'
+    color: '#06b6d4',
+    description: 'Launches chilled coconut ice blasts that freeze invaders.',
+    icon: '🥥'
   },
   plasma: {
     type: 'plasma',
-    name: 'Plasma Blaster',
+    name: 'Volcano Blast Mortar',
     cost: 200,
     range: 160,
     damage: 45,
     fireRate: 0.8,
-    color: '#ff0055',
-    description: 'Fires heavy plasma rockets dealing area splash damage.',
-    icon: '🚀'
+    color: '#ef4444',
+    description: 'Fires heavy lava explosive mortar shells dealing area splash damage.',
+    icon: '🌋'
   },
   magnet: {
     type: 'magnet',
-    name: 'Pulse Disruptor',
+    name: 'Tiki Thunder Totem',
     cost: 175,
     range: 110,
     damage: 25,
     fireRate: 1.2,
-    color: '#bf00ff',
-    description: 'Stuns and strips robotic shields from alien foes.',
-    icon: '🧲'
+    color: '#8b5cf6',
+    description: 'Unleashes tropical lightning shocks that stun enemy hordes.',
+    icon: '🗿'
   }
 };

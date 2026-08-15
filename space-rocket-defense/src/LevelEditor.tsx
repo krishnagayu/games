@@ -88,22 +88,20 @@ export const LevelEditor: React.FC<LevelEditorProps> = ({ onSaveChallenge, onCan
     <div style={{
       display: 'flex',
       gap: '24px',
-      background: 'rgba(15, 23, 42, 0.95)',
+      background: 'rgba(255, 255, 255, 0.94)',
       backdropFilter: 'blur(16px)',
       padding: '24px',
-      borderRadius: '24px',
-      border: '1px solid rgba(0, 240, 255, 0.3)',
-      boxShadow: '0 16px 48px rgba(0, 0, 0, 0.7)',
-      color: '#fff',
-      maxWidth: '1200px',
+      borderRadius: '28px',
+      border: '3px solid #fde047',
+      boxShadow: '0 16px 48px rgba(0, 0, 0, 0.2)',
+      color: '#0f172a',
+      maxWidth: '1000px',
       width: '100%'
     }}>
       {/* Left: Interactive Canvas Path Editor */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '20px', color: '#00f0ff' }}>🖌️ 1. Draw Alien Path</h2>
-          <span style={{ fontSize: '12px', color: '#94a3b8' }}>Click & Drag across grid to draw track</span>
-        </div>
+        <h2 style={{ fontSize: '20px', color: '#0d9488', fontFamily: 'Fredoka, cursive' }}>🎨 1. Paint Alien March Path</h2>
+        <p style={{ fontSize: '13px', color: '#64748b' }}>Click and drag across tiles to draw custom invasion path!</p>
 
         <div
           onMouseDown={handleCanvasMouseDown}

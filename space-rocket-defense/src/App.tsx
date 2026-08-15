@@ -62,7 +62,7 @@ export function App() {
     <div className="game-container">
       {/* Top Navigation Header */}
       <header className="game-header">
-        <h1>🚀 SPACE ROCKET DEFENSE</h1>
+        <h1>🏝️ ISLAND ROCKET DEFENSE</h1>
         <div className="header-badge">
           {customChallenge ? `🎯 Challenge by ${customChallenge.creatorName}` : MAPS[currentMapIndex].name}
         </div>
@@ -71,11 +71,11 @@ export function App() {
       {/* Main Game Screen */}
       {gameState === 'menu' && (
         <div className="modal-screen">
-          <h2>Defend the Space Base!</h2>
-          <p>Build laser towers, frost beams, and plasma cannons to defend the rocket!</p>
+          <h2>Defend the Tropical Island!</h2>
+          <p>Build Sunfire cannons, coconut ice launchers, volcano blasters, and tiki totems to protect the island launch pad!</p>
           
           <div className="map-selector">
-            <h3>Select Mode / Planet Map:</h3>
+            <h3>Select Island Map:</h3>
             <div className="map-buttons">
               {MAPS.map((map, idx) => (
                 <button
@@ -86,7 +86,7 @@ export function App() {
                     setCustomChallenge(null);
                   }}
                 >
-                  🪐 {map.name}
+                  🌴 {map.name}
                 </button>
               ))}
             </div>
@@ -105,7 +105,7 @@ export function App() {
 
             <button
               className="primary-btn"
-              style={{ background: 'linear-gradient(135deg, #ff00aa, #ffbb00)' }}
+              style={{ background: 'linear-gradient(135deg, #f59e0b, #ea580c)' }}
               onClick={() => setGameState('editor')}
             >
               🖌️ 2-PLAYER LEVEL CREATOR

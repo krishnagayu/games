@@ -42,24 +42,24 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       display: 'flex',
       flexDirection: 'column',
       gap: '16px',
-      width: '320px',
-      background: 'rgba(15, 23, 42, 0.85)',
-      backdropFilter: 'blur(12px)',
-      padding: '20px',
-      borderRadius: '16px',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-      color: '#fff'
+      width: '330px',
+      background: 'rgba(255, 255, 255, 0.92)',
+      backdropFilter: 'blur(16px)',
+      padding: '22px',
+      borderRadius: '24px',
+      border: '2px solid #cbd5e1',
+      boxShadow: '0 12px 32px rgba(0, 0, 0, 0.15)',
+      color: '#0f172a'
     }}>
       {/* Header & Score Stats */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <span style={{ fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase' }}>Score</span>
-          <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#00f0ff' }}>{score}</div>
+          <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Score</span>
+          <div style={{ fontSize: '24px', fontWeight: '800', color: '#0284c7', fontFamily: 'Fredoka, cursive' }}>{score}</div>
         </div>
         <div>
-          <span style={{ fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase' }}>Wave</span>
-          <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#ffbb00' }}>{wave} / 10</div>
+          <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Wave</span>
+          <div style={{ fontSize: '24px', fontWeight: '800', color: '#d97706', fontFamily: 'Fredoka, cursive' }}>{wave} / 10</div>
         </div>
       </div>
 
@@ -67,30 +67,31 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-        background: 'rgba(255, 255, 255, 0.05)',
+        background: '#f1f5f9',
         padding: '12px 16px',
-        borderRadius: '12px'
+        borderRadius: '16px',
+        border: '1px solid #e2e8f0'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '20px' }}>💎</span>
+          <span style={{ fontSize: '22px' }}>🪙</span>
           <div>
-            <div style={{ fontSize: '10px', color: '#94a3b8' }}>CREDITS</div>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#00ffaa' }}>{credits}</div>
+            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 800 }}>GOLD COINS</div>
+            <div style={{ fontSize: '18px', fontWeight: '800', color: '#059669' }}>{credits}</div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '20px' }}>🚀</span>
+          <span style={{ fontSize: '22px' }}>🏝️</span>
           <div>
-            <div style={{ fontSize: '10px', color: '#94a3b8' }}>BASE HP</div>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#ff0055' }}>{lives}</div>
+            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 800 }}>ISLAND HP</div>
+            <div style={{ fontSize: '18px', fontWeight: '800', color: '#e11d48' }}>{lives}</div>
           </div>
         </div>
       </div>
 
       {/* Build Defense Towers */}
       <div>
-        <h3 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#94a3b8', letterSpacing: '1px' }}>
-          BUILD DEFENSES
+        <h3 style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#64748b', fontWeight: 800, letterSpacing: '1px' }}>
+          BUILD ISLAND DEFENSES
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           {(Object.keys(TOWER_CONFIGS) as TowerType[])
@@ -109,87 +110,94 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '12px 8px',
-                  borderRadius: '12px',
-                  border: isSelected ? `2px solid ${config.color}` : '1px solid rgba(255, 255, 255, 0.1)',
-                  background: isSelected ? 'rgba(0, 240, 255, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                  opacity: canAfford ? 1 : 0.4,
+                  padding: '12px 10px',
+                  borderRadius: '16px',
+                  border: isSelected ? `2px solid ${config.color}` : '2px solid #e2e8f0',
+                  background: isSelected ? '#f0fdf4' : canAfford ? '#ffffff' : '#f8fafc',
+                  opacity: canAfford ? 1 : 0.5,
                   cursor: canAfford ? 'pointer' : 'not-allowed',
-                  color: '#fff',
-                  transition: 'all 0.2s'
+                  boxShadow: isSelected ? `0 4px 14px ${config.color}40` : '0 2px 8px rgba(0, 0, 0, 0.04)',
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center'
                 }}
               >
-                <span style={{ fontSize: '24px' }}>{config.icon}</span>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', marginTop: '4px' }}>{config.name}</span>
-                <span style={{ fontSize: '11px', color: '#00ffaa', marginTop: '2px' }}>💎 {config.cost}</span>
+                <span style={{ fontSize: '26px', marginBottom: '4px' }}>{config.icon}</span>
+                <span style={{ fontSize: '13px', fontWeight: '800', color: '#1e293b' }}>{config.name}</span>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: '#059669', marginTop: '2px' }}>
+                  🪙 {config.cost}
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Ultimate Ability: Star Orbital Strike */}
+      {/* Special Ability: Sun Strike */}
       <button
         onClick={onTriggerOrbitalStrike}
         disabled={orbitalStrikeCooldown}
         style={{
-          padding: '12px',
-          borderRadius: '12px',
+          padding: '14px',
+          borderRadius: '16px',
           border: 'none',
-          background: orbitalStrikeCooldown
-            ? 'rgba(255, 255, 255, 0.1)'
-            : 'linear-gradient(135deg, #ff0055, #ffbb00)',
+          background: orbitalStrikeCooldown ? '#cbd5e1' : 'linear-gradient(135deg, #f59e0b, #ea580c)',
           color: '#fff',
-          fontWeight: 'bold',
+          fontWeight: '800',
           fontSize: '14px',
           cursor: orbitalStrikeCooldown ? 'not-allowed' : 'pointer',
-          boxShadow: orbitalStrikeCooldown ? 'none' : '0 4px 15px rgba(255, 0, 85, 0.4)',
-          transition: 'all 0.2s'
+          boxShadow: orbitalStrikeCooldown ? 'none' : '0 6px 18px rgba(245, 158, 11, 0.4)',
+          transition: 'all 0.2s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
         }}
       >
-        {orbitalStrikeCooldown ? '⏳ Star Strike Cooldown' : '⭐ Orbital Star Strike'}
+        <span>☀️</span>
+        {orbitalStrikeCooldown ? 'SUN STRIKE COOLDOWN...' : 'SOLAR SUN STRIKE!'}
       </button>
 
-      {/* Speed, Pause & Sound Controls */}
+      {/* Game Speed & Pause Controls */}
       <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
         <button
           onClick={onTogglePause}
           style={{
             flex: 1,
             padding: '10px',
-            borderRadius: '8px',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            background: isPaused ? '#ffbb00' : 'rgba(255, 255, 255, 0.1)',
-            color: '#fff',
+            borderRadius: '12px',
+            border: '1px solid #cbd5e1',
+            background: isPaused ? '#fef3c7' : '#ffffff',
+            color: isPaused ? '#b45309' : '#334155',
+            fontWeight: '700',
             cursor: 'pointer'
           }}
         >
-          {isPaused ? '▶️ Resume' : '⏸️ Pause'}
+          {isPaused ? '▶ Resume' : '⏸ Pause'}
         </button>
-
         <button
           onClick={onToggleSpeed}
           style={{
             flex: 1,
             padding: '10px',
-            borderRadius: '8px',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            background: 'rgba(255, 255, 255, 0.1)',
-            color: '#fff',
+            borderRadius: '12px',
+            border: '1px solid #cbd5e1',
+            background: gameSpeed > 1 ? '#e0f2fe' : '#ffffff',
+            color: gameSpeed > 1 ? '#0369a1' : '#334155',
+            fontWeight: '700',
             cursor: 'pointer'
           }}
         >
           ⚡ {gameSpeed}x Speed
         </button>
-
         <button
           onClick={onToggleSound}
           style={{
-            padding: '10px',
-            borderRadius: '8px',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            background: soundEnabled ? 'rgba(0, 255, 170, 0.2)' : 'rgba(255, 0, 85, 0.2)',
-            color: '#fff',
+            padding: '10px 14px',
+            borderRadius: '12px',
+            border: '1px solid #cbd5e1',
+            background: soundEnabled ? '#f0fdf4' : '#f8fafc',
+            color: soundEnabled ? '#15803d' : '#64748b',
+            fontWeight: '700',
             cursor: 'pointer'
           }}
         >
