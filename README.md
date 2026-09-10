@@ -31,8 +31,8 @@ Ensure you have **Node.js (v18.0 or higher)** installed on your machine:
 git clone https://github.com/krishnagayu/games.git
 cd games
 
-# 2. Pick a game (e.g. Space Rocket Defense)
-cd space-rocket-defense
+# 2. Pick a game (e.g. Island Defense)
+cd island-defense
 
 # 3. Install dependencies & start dev server
 npm install

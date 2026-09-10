@@ -456,37 +456,6 @@ function startSession(chapterId, difficulty) {
 
   renderApp();
 }
-  const chapter = GRAMMAR_CHAPTERS.find(c => c.id === chapterId);
-  
-  // Get static question for this difficulty (if any)
-  const staticQ = chapter.staticQuestions.find(q => q.difficulty === difficulty);
-  
-  // Generate 4 dynamic questions ensuring uniqueness
-  const questions = [];
-  const usedIds = new Set();
-  if (staticQ) {
-    questions.push({ ...staticQ });
-    usedIds.add(staticQ.id);
-  }
-  while (questions.length < 5) {
-    const dyn = generateQuestion(chapterId, difficulty);
-    if (!usedIds.has(dyn.id)) {
-      questions.push(dyn);
-      usedIds.add(dyn.id);
-    }
-  }
-
-  STATE.activeSession = {
-    chapterId,
-    chapterTitle: chapter.title,
-    difficulty,
-    questions,
-    currentIdx: 0,
-    answers: [] // { questionId, selectedAnswer, correct: boolean }
-  };
-
-  renderApp();
-}
 
 // RENDER SESSION PRACTICE VIEW (HIGH FOCUS)
 function renderPracticeView(container) {

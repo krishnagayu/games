@@ -127,7 +127,7 @@ class Game:
             obs_type = random.choice(['meteor', 'laser_wall', 'cube'])
             self.obstacles.append({
                 'x': lane_x,
-                'y': 0.8, # On track surface height
+                'y': 1.0, # On track surface height
                 'z': 35.0,
                 'type': obs_type,
                 'rot': 0.0,
@@ -140,7 +140,7 @@ class Game:
             item_type = 'boost' if random.random() < 0.2 else 'coin'
             self.coin_items.append({
                 'x': lane_x,
-                'y': 0.6,
+                'y': 1.0,
                 'z': 35.0,
                 'type': item_type,
                 'rot': 0.0
@@ -173,9 +173,9 @@ class Game:
                     steer += 1.0
 
                 # Smooth Player Movement & Bank/Tilt Angle
-                self.player_target_x = max(-1.85, min(1.85, self.player_target_x + steer * 3.2 * dt))
-                self.player_x3d += (self.player_target_x - self.player_x3d) * 12.0 * dt
-                self.camera_tilt += (steer * 0.15 - self.camera_tilt) * 10.0 * dt
+                self.player_target_x = max(-1.85, min(1.85, self.player_target_x + steer * 6.5 * dt))
+                self.player_x3d += (self.player_target_x - self.player_x3d) * 16.0 * dt
+                self.camera_tilt += (steer * 0.2 - self.camera_tilt) * 12.0 * dt
 
                 # Boost Logic
                 if self.boost_timer > 0:
