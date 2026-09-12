@@ -234,7 +234,7 @@ function createCircuitSim() {
     } else if (isCurrentFlowing) {
       statusTitle += `CLOSED CIRCUIT (Glow: ${(brightnessRatio * 100).toFixed(0)}%)`;
       statusClass = "status-success";
-      explanation = `Current flows smoothly from Positive (+) terminal to Negative (-) terminal through the intact tungsten filament. Output: ${netVoltage.toFixed(1)} V.`;
+      explanation = `Current flows smoothly from Positive (+) terminal to Negative (-) terminal through the intact bulb filament. Output: ${netVoltage.toFixed(1)} V.`;
     }
 
     readout.innerHTML = `
@@ -442,16 +442,16 @@ function createFuseSim() {
         <div class="readout-card status-error">
           <div class="readout-title">⚠️ FUSE MELTED / CIRCUIT TRIPPED!</div>
           <div class="readout-desc">
-            Load current reached <strong>${currentA.toFixed(1)} A</strong>, exceeding the 8 A limit! The low-melting-point fuse wire melted instantly to protect the house from an electrical fire.
+            Load current reached <strong>${currentA.toFixed(1)} A</strong>, exceeding the 8 A safety limit! As taught in NCERT Class 7, the low-melting-point fuse wire melted instantly to break the circuit, protecting against electrical fires caused by short circuits or overloading.
           </div>
         </div>
       `;
     } else {
       readout.innerHTML = `
         <div class="readout-card status-success">
-          <div class="readout-title">JOULE HEATING ACTIVE (H ∝ I² · R · t)</div>
+          <div class="readout-title">HEATING EFFECT OF ELECTRIC CURRENT ACTIVE</div>
           <div class="readout-desc">
-            Current: ${currentA.toFixed(1)} A. Heating status: <strong>${heatLabel}</strong>. Both the Fuse wire and MCB are safely conducting current.
+            Current: ${currentA.toFixed(1)} A. Heating status: <strong>${heatLabel}</strong>. Heat produced in the Nichrome wire element depends on its material, length, and thickness. Both the Fuse wire and MCB are safely conducting current.
           </div>
         </div>
       `;
@@ -529,10 +529,10 @@ function createOerstedSim() {
     const stage = el.querySelector('#oersted-stage');
     const readout = el.querySelector('#oersted-readout');
 
-    // Needle deflection angle
-    // At rest (OFF): Points North (0 deg)
-    // SNOW rule: Current South to North over needle -> North pole deflects West (-40 deg)
-    // Reversed (North to South) -> North pole deflects East (+40 deg)
+    // Needle deflection angle:
+    // At rest (OFF): Points along Earth's North-South axis (0 deg)
+    // When current is ON: Compass needle deflects (-40 deg)
+    // When current direction is reversed: Deflection direction flips (+40 deg)
     let needleAngle = 0;
     if (currentOn) {
       needleAngle = reversedDirection ? 42 : -42;
@@ -608,7 +608,7 @@ function createOerstedSim() {
         <div class="readout-card status-success">
           <div class="readout-title">Oersted Deflection: Needle Swings ${dirText}</div>
           <div class="readout-desc">
-            Hans Christian Oersted (1820): Electric current generates a circular magnetic field around the wire, exerting magnetic torque that deflects the compass!
+            Hans Christian Oersted (1820): When electric current flows through a wire, it behaves like a magnet and deflects a compass needle. Notice that reversing current direction flips the deflection direction!
           </div>
         </div>
       `;

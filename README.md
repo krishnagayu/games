@@ -13,7 +13,8 @@ Welcome to the **Kids Web Games Collection**! A suite of fun, interactive, educa
 | **🏎️ Neon Racer** | High-octane arcade racing game. | Neon aesthetic with smooth controls and obstacles. |
 | **🐍 Snake Game** | Modernized classic snake game. | Smooth grid movement & score tracking. |
 | **🌐 Snake Game (Multiplayer)** | Online multiplayer snake. | Play with friends locally or over the network! |
-| **📚 Class 5 & 7 Learning Coaches** | Interactive Math & English learning modules. | Fun educational coaching tools for school topics. |
+| **📚 Class 5 & 7 Learning Coaches** | Interactive Math, English & Science learning modules. | Fun educational coaching tools for school topics including NCERT Class 7 Adaptive Science & Electricity Lab. |
+| **⚡ Class 7 Science Coach** | NCERT Class 7 Science companion with interactive circuits lab. | Strictly based on NCERT Class 7 Science textbook; covers all 13 chapters, dedicated Electricity deep-dive, Oersted compass simulator, fuse/MCB trip mechanics, and adaptive diagnostics. |
 
 ---
 

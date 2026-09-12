@@ -1,5 +1,5 @@
 import './style.css';
-import { chapters, electricityGuide, worksheets } from './data.js';
+import { chapters, chapterGuides, electricityGuide, worksheets } from './data.js';
 import { generateQuestion } from './generators.js';
 import { createElectricityLab } from './lab.js';
 
@@ -196,18 +196,18 @@ function createHero() {
 
   const { correctQuestions } = getStats();
 
-  let rankTitle = 'Junior Apprentice';
-  if (correctQuestions >= 50) rankTitle = 'Olympiad Scientist 👑';
-  else if (correctQuestions >= 25) rankTitle = 'Circuit Specialist 🚀';
-  else if (correctQuestions >= 10) rankTitle = 'Science Explorer 🔬';
+  let rankTitle = 'Junior Science Apprentice 🌱';
+  if (correctQuestions >= 50) rankTitle = 'NCERT Science Master 👑';
+  else if (correctQuestions >= 25) rankTitle = 'Circuit & Science Specialist 🚀';
+  else if (correctQuestions >= 10) rankTitle = 'Curious Scientist 🔬';
 
   hero.innerHTML = `
     <div class="hero__badge">
       <span class="hero__badge-dot"></span>
-      Class 7 CBSE Adaptive Science Coach
+      NCERT Class 7 Science Coach
     </div>
     <h1>Master Science & Circuits</h1>
-    <p>Adaptive diagnostics, interactive virtual circuits laboratory, and step-by-step concept mastery tailored to CBSE Class 7, with a dedicated deep-dive into <strong>Electric Current and Its Effects</strong>.</p>
+    <p>Adaptive diagnostics, interactive virtual circuits laboratory, and step-by-step concept mastery strictly aligned with the <strong>NCERT Class 7 Science textbook</strong>, featuring a dedicated deep-dive into <strong>Electric Current and Its Effects</strong>.</p>
     <div class="hero__stats">
       <div class="hero__stat">
         <div class="hero__stat-value">${state.streak} Days</div>
@@ -234,8 +234,8 @@ function createChaptersGrid() {
   section.innerHTML = `
     <div class="section__header">
       <div>
-        <h2 class="section__title">Class 7 Science Syllabus</h2>
-        <p class="section__subtitle">Select Chapter 10 for the specialized Electricity deep-dive & live lab, or choose any chapter to start adaptive drills.</p>
+        <h2 class="section__title">NCERT Class 7 Science Chapters</h2>
+        <p class="section__subtitle">Select any chapter to start adaptive drills strictly based on NCERT concepts, or explore Chapter 10 for the specialized Electricity deep-dive & live lab.</p>
       </div>
     </div>
   `;
@@ -331,41 +331,39 @@ function createChapterView() {
   `;
   view.appendChild(header);
 
-  // If Chapter 10 (Electricity Focus), show specialized modules
-  if (ch.id === 10) {
-    // 1. Launch Diagnostics Card
-    const launchCard = document.createElement('div');
-    launchCard.className = 'question-card';
-    launchCard.style.border = '1px solid var(--accent)';
-    launchCard.style.background = 'linear-gradient(135deg, hsla(48, 100%, 50%, 0.08), var(--bg-card))';
-    
-    launchCard.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div>
-          <div style="font-size: var(--fs-xs); color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-            CBSE Class 7 Adaptive Drill Engine
-          </div>
-          <h3 style="font-size: var(--fs-xl); font-weight: 800; margin-bottom: 0.5rem;">Electric Current Adaptive Diagnostics</h3>
-          <p style="color: var(--text-secondary); max-width: 650px; font-size: var(--fs-sm);">
-            10-question dynamic diagnostic session scaling across <strong>Basic, Intermediate, Advanced, and Olympiad/NTSE</strong> tiers with detailed step-by-step answers.
-          </p>
+  // 1. Diagnostic Launch Card
+  const launchCard = document.createElement('div');
+  launchCard.className = 'question-card';
+  launchCard.style.border = '1px solid var(--accent)';
+  launchCard.style.background = 'linear-gradient(135deg, hsla(48, 100%, 50%, 0.08), var(--bg-card))';
+  
+  launchCard.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="font-size: var(--fs-xs); color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+          NCERT Class 7 Adaptive Science Engine
         </div>
-        <div>
-          <button class="option-btn correct" id="btn-start-ch10-session" style="padding: 0.9rem 2rem; font-weight: 800; font-size: var(--fs-base); width: auto;">
-            ⚡ Start Adaptive Session
-          </button>
-        </div>
+        <h3 style="font-size: var(--fs-xl); font-weight: 800; margin-bottom: 0.5rem;">${ch.title} Adaptive Diagnostics</h3>
+        <p style="color: var(--text-secondary); max-width: 650px; font-size: var(--fs-sm);">
+          10-question dynamic diagnostic session scaling across <strong>Basic (Foundations), Intermediate (Concepts), Advanced (Application), and Mastery (Exemplar)</strong> tiers strictly based on the Class 7 NCERT textbook.
+        </p>
       </div>
-    `;
-    launchCard.querySelector('#btn-start-ch10-session').addEventListener('click', () => {
-      startAdaptiveSession(10);
-    });
-    view.appendChild(launchCard);
+      <div>
+        <button class="option-btn correct" id="btn-start-session" style="padding: 0.9rem 2rem; font-weight: 800; font-size: var(--fs-base); width: auto;">
+          ⚡ Start Adaptive Session
+        </button>
+      </div>
+    </div>
+  `;
+  launchCard.querySelector('#btn-start-session').addEventListener('click', () => {
+    startAdaptiveSession(ch.id);
+  });
+  view.appendChild(launchCard);
 
-    // 2. Embed the Hands-on Interactive Electricity Lab!
+  // 2. If Chapter 10 (Electricity Focus), show Virtual Lab and Circuit Component Guide
+  if (ch.id === 10) {
     view.appendChild(createElectricityLab());
 
-    // 3. Circuit Components Symbol Reference Guide
     const compSection = document.createElement('div');
     compSection.className = 'question-card';
     compSection.innerHTML = `
@@ -373,7 +371,7 @@ function createChapterView() {
         Standard Circuit Components & Symbols Guide
       </h3>
       <p class="section__subtitle" style="margin-bottom: 1.5rem;">
-        Master the standard international representations required by the CBSE Class 7 syllabus:
+        Master the standard circuit representations required by the NCERT Class 7 textbook:
       </p>
       <div class="component-guide-grid">
         ${electricityGuide.components.map(c => `
@@ -386,19 +384,22 @@ function createChapterView() {
       </div>
     `;
     view.appendChild(compSection);
+  }
 
-    // 4. Core Scientific Concepts Breakdown
+  // 3. NCERT Core Scientific Concepts Breakdown
+  const concepts = ch.id === 10 ? electricityGuide.keyConcepts : (chapterGuides[ch.id] || []);
+  if (concepts.length > 0) {
     const conceptsCard = document.createElement('div');
     conceptsCard.className = 'question-card';
     conceptsCard.innerHTML = `
       <h3 class="chapter-card__title" style="margin-bottom: 0.5rem; font-size: var(--fs-lg);">
-        Key Electrical Principles & Phenomena
+        NCERT Key Scientific Concepts & Principles
       </h3>
       <p class="section__subtitle" style="margin-bottom: 1.5rem;">
-        Essential foundational facts for school examinations and NTSE / Olympiad competitions:
+        Essential foundational principles and definitions from the NCERT Class 7 Science textbook:
       </p>
       <div style="display: grid; gap: 1rem;">
-        ${electricityGuide.keyConcepts.map(kc => `
+        ${concepts.map(kc => `
           <div style="background: var(--bg-glass); border: 1px solid var(--border-subtle); padding: 1rem 1.25rem; border-radius: var(--radius-md);">
             <h4 style="font-size: var(--fs-base); color: var(--accent); margin-bottom: 0.25rem;">${kc.title}</h4>
             <p style="font-size: var(--fs-sm); color: var(--text-secondary); line-height: 1.5;">${kc.desc}</p>
@@ -407,47 +408,29 @@ function createChapterView() {
       </div>
     `;
     view.appendChild(conceptsCard);
-
-  } else {
-    // General Chapter View for other chapters
-    const actionCard = document.createElement('div');
-    actionCard.className = 'question-card';
-    
-    let keyTopicsHtml = ch.topics.map(t => `<li style="font-size: var(--fs-base); margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--accent);">✔</span> ${t}</li>`).join('');
-
-    actionCard.innerHTML = `
-      <h3 class="chapter-card__title" style="margin-bottom: 1rem; font-size: var(--fs-xl);">CBSE Adaptive Diagnostics</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">
-        Launch a 10-question adaptive science drill to test and reinforce your concepts in this chapter. 
-        Difficulty automatically adjusts after each question based on your accuracy.
-      </p>
-      
-      <div style="margin-bottom: 2rem;">
-        <h4 style="font-size: var(--fs-sm); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Syllabus Topics</h4>
-        <ul style="padding-left: 0.5rem;">
-          ${keyTopicsHtml}
-        </ul>
-      </div>
-      
-      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-        <div>
-          <div style="font-size: var(--fs-xs); color: var(--text-muted); text-transform: uppercase;">Chapter High Score</div>
-          <div style="font-size: var(--fs-xl); font-weight: 800; color: ${highScore > 0 ? 'var(--accent)' : 'var(--text-muted)'}">
-            ${highScore > 0 ? `${highScore} Points` : 'No attempts yet'}
-          </div>
-        </div>
-        <button class="option-btn correct" id="btn-start-general-session" style="padding: 0.85rem 2rem; font-weight: 700; width: auto; font-size: var(--fs-base);">
-          ⚡ Start Adaptive Session
-        </button>
-      </div>
-    `;
-
-    actionCard.querySelector('#btn-start-general-session').addEventListener('click', () => {
-      startAdaptiveSession(ch.id);
-    });
-
-    view.appendChild(actionCard);
   }
+
+  // 4. Syllabus Subtopics & High Score
+  const topicsCard = document.createElement('div');
+  topicsCard.className = 'question-card';
+  let keyTopicsHtml = ch.topics.map(t => `<li style="font-size: var(--fs-base); margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--accent);">✔</span> ${t}</li>`).join('');
+
+  topicsCard.innerHTML = `
+    <h3 class="chapter-card__title" style="margin-bottom: 1rem; font-size: var(--fs-lg);">NCERT Textbook Subtopics</h3>
+    <ul style="padding-left: 0.5rem; margin-bottom: 1.5rem;">
+      ${keyTopicsHtml}
+    </ul>
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+      <div>
+        <div style="font-size: var(--fs-xs); color: var(--text-muted); text-transform: uppercase;">Chapter High Score</div>
+        <div style="font-size: var(--fs-xl); font-weight: 800; color: ${highScore > 0 ? 'var(--accent)' : 'var(--text-muted)'}">
+          ${highScore > 0 ? `${highScore} Points` : 'No attempts yet'}
+        </div>
+      </div>
+    </div>
+  `;
+  view.appendChild(topicsCard);
 
   return view;
 }
@@ -496,12 +479,18 @@ function createActiveSessionView() {
     advanced: 'hsl(48, 100%, 50%)',
     olympiad: 'hsl(350, 89%, 60%)'
   };
-  const activeColor = levelColors[sess.currentLevel] || 'var(--accent)';
+  const tierLabels = {
+    basic: 'Basic (NCERT Foundations)',
+    intermediate: 'Intermediate (NCERT Concepts)',
+    advanced: 'Advanced (NCERT Application)',
+    olympiad: 'Mastery (NCERT Exemplar)'
+  };
+  const activeLabel = tierLabels[sess.currentLevel] || `${sess.currentLevel} Tier`;
 
   header.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
       <span style="background: hsla(${activeColor.slice(4, -1)}, 0.15); color: ${activeColor}; border: 1px solid ${activeColor}; font-weight: 800; text-transform: uppercase; font-size: var(--fs-xs); padding: 0.3rem 0.8rem; border-radius: 99px;">
-        ${sess.currentLevel} Tier
+        ${activeLabel}
       </span>
       <div style="font-size: var(--fs-sm); font-weight: 600; color: var(--text-secondary);">
         Question ${sess.currentStep + 1} of ${sess.totalSteps}
@@ -634,13 +623,13 @@ function createActiveSessionView() {
 
     solCard.innerHTML = `
       <p style="font-size: var(--fs-base); margin-bottom: 0.5rem; color: ${sess.gradedCorrect ? 'var(--electric-green)' : 'var(--electric-red)'}; font-weight: 800;">
-        ${sess.gradedCorrect ? '✔ Correct Answer! Great scientific reasoning! 🎉' : '✖ Incorrect. Let us examine the scientific principle: 💡'}
+        ${sess.gradedCorrect ? '✔ Correct Answer! Solid NCERT understanding! 🎉' : '✖ Incorrect. Let us examine the NCERT principle: 💡'}
       </p>
       <p style="margin-bottom: 0.75rem; color: var(--text-primary);">
         <strong>Answer Key:</strong> <span style="color: var(--accent); font-weight: 700;">${q.type === 'mcq' ? q.options[q.answer] : q.answer}</span>
       </p>
       <p style="color: var(--text-secondary); line-height: 1.6;">
-        <strong>Step-by-Step Explanation:</strong> ${q.solution}
+        <strong>NCERT Step-by-Step Explanation:</strong> ${q.solution}
       </p>
 
       <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
@@ -768,16 +757,16 @@ function createSessionReportView() {
     return sess.trajectory[idx + 1] > sess.trajectory[idx];
   }).length;
 
-  let masteryLabel = 'Basic Learner';
+  let masteryLabel = 'Basic Learner 🌱';
   let masteryColor = 'hsl(145, 70%, 48%)';
   if (sess.score >= 850) {
-    masteryLabel = 'Olympiad Grandmaster 👑';
+    masteryLabel = 'NCERT Science Master 👑';
     masteryColor = 'hsl(350, 89%, 60%)';
   } else if (sess.score >= 650) {
-    masteryLabel = 'Circuit Specialist 🚀';
+    masteryLabel = 'Advanced Concept Achiever 🚀';
     masteryColor = 'hsl(48, 100%, 50%)';
   } else if (sess.score >= 450) {
-    masteryLabel = 'Intermediate Scientist 🔬';
+    masteryLabel = 'Proficient Scientist 🔬';
     masteryColor = 'hsl(199, 89%, 48%)';
   }
 
@@ -788,7 +777,7 @@ function createSessionReportView() {
   header.className = 'worksheet-view__header';
   header.innerHTML = `
     <h2 class="worksheet-view__title">Performance Diagnostic Report</h2>
-    <p class="section__subtitle">CBSE Class 7 Science Adaptive Evaluation breakdown for Chapter ${ch.id}: ${ch.title}</p>
+    <p class="section__subtitle">NCERT Class 7 Science Adaptive Evaluation breakdown for Chapter ${ch.id}: ${ch.title}</p>
   `;
   view.appendChild(header);
 
@@ -832,7 +821,7 @@ function createSessionReportView() {
         </defs>
         
         <line x1="40" y1="30" x2="450" y2="30" stroke="var(--border-subtle)" stroke-dasharray="4 4" />
-        <text x="455" y="34" fill="var(--text-muted)" font-size="9px">1000 (Olympiad)</text>
+        <text x="455" y="34" fill="var(--text-muted)" font-size="9px">1000 (Mastery)</text>
         
         <line x1="40" y1="80" x2="450" y2="80" stroke="var(--border-subtle)" stroke-dasharray="4 4" />
         <text x="455" y="84" fill="var(--text-muted)" font-size="9px">800 (Advanced)</text>
@@ -945,7 +934,7 @@ function createSessionReportView() {
       <div style="margin-top: 1rem; color: var(--text-secondary); font-size: var(--fs-sm); line-height: 1.6; padding-left: 0.5rem;">
         <p style="color: var(--text-primary); font-size: var(--fs-base); margin-bottom: 0.75rem;"><strong>Problem:</strong> ${q.text}</p>
         <p style="margin-bottom: 0.5rem;"><strong>Correct Answer:</strong> <span style="color: var(--accent); font-weight: 700;">${ansKey}</span></p>
-        <p><strong>Scientific Explanation:</strong> ${q.solution}</p>
+        <p><strong>NCERT Explanation:</strong> ${q.solution}</p>
       </div>
     `;
 
